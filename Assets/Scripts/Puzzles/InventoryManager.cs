@@ -36,7 +36,6 @@ public class InventoryManager : MonoBehaviour
 
     private void ToggleLogbook()
     {
-        Debug.Log("Triggered");
         _logbookOpen = !_logbookOpen;
         logBook.SetActive(_logbookOpen);
     }
