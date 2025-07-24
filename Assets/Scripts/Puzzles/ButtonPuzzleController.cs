@@ -18,6 +18,7 @@ public class ButtonPuzzleController : MonoBehaviour, IPuzzle
 
     private List<int> _pressedButtons = new();
 
+    // Will be used for moving button when clicked
     private Vector3 _buttonClickedOffset = new Vector3(0f, 0f, 0.05f);
     private float _buttonMoveDuration = 0.2f;
     private Vector3 _buttonOriginalPosition;
@@ -27,15 +28,9 @@ public class ButtonPuzzleController : MonoBehaviour, IPuzzle
     public bool isPuzzleSolved { get; private set; } = false;
 
 
-// Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         SetButtonColors();
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
     }
 
     void SetButtonColors()
