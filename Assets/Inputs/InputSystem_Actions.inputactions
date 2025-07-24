@@ -990,6 +990,34 @@
                     "isPartOfComposite": false
                 }
             ]
+        },
+        {
+            "name": "Puzzle",
+            "id": "f2fe36f2-9f28-4871-899a-3aceae4c7d66",
+            "actions": [
+                {
+                    "name": "ToggleLogBook",
+                    "type": "Button",
+                    "id": "e1bcd422-bf45-4fbd-95e6-f8a7de38aac8",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "9b9e3022-88c5-433f-b366-ab5254944905",
+                    "path": "<Keyboard>/e",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "ToggleLogBook",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
         }
     ],
     "controlSchemes": [
