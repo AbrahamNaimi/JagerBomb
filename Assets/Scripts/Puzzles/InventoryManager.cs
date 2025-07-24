@@ -10,7 +10,7 @@ public class InventoryManager : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        _inputActions.Inventory.ToggleLogbook.performed += ctx => ToggleLogbook();
+        _inputActions.Puzzle.ToggleLogBook.performed += ctx => ToggleLogbook();
     }
 
     // Update is called once per frame

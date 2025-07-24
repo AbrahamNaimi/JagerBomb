@@ -1078,11 +1078,11 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
             ]
         },
         {
-            ""name"": ""Inventory"",
+            ""name"": ""Puzzle"",
             ""id"": ""f2fe36f2-9f28-4871-899a-3aceae4c7d66"",
             ""actions"": [
                 {
-                    ""name"": ""Open Inventory"",
+                    ""name"": ""ToggleLogBook"",
                     ""type"": ""Button"",
                     ""id"": ""e1bcd422-bf45-4fbd-95e6-f8a7de38aac8"",
                     ""expectedControlType"": """",
@@ -1099,7 +1099,7 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": "";Keyboard&Mouse"",
-                    ""action"": ""Open Inventory"",
+                    ""action"": ""ToggleLogBook"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -1192,16 +1192,16 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
         m_UI_ScrollWheel = m_UI.FindAction("ScrollWheel", throwIfNotFound: true);
         m_UI_TrackedDevicePosition = m_UI.FindAction("TrackedDevicePosition", throwIfNotFound: true);
         m_UI_TrackedDeviceOrientation = m_UI.FindAction("TrackedDeviceOrientation", throwIfNotFound: true);
-        // Inventory
-        m_Inventory = asset.FindActionMap("Inventory", throwIfNotFound: true);
-        m_Inventory_OpenInventory = m_Inventory.FindAction("Open Inventory", throwIfNotFound: true);
+        // Puzzle
+        m_Puzzle = asset.FindActionMap("Puzzle", throwIfNotFound: true);
+        m_Puzzle_ToggleLogBook = m_Puzzle.FindAction("ToggleLogBook", throwIfNotFound: true);
     }
 
     ~@InputActions()
     {
         UnityEngine.Debug.Assert(!m_Player.enabled, "This will cause a leak and performance issues, InputActions.Player.Disable() has not been called.");
         UnityEngine.Debug.Assert(!m_UI.enabled, "This will cause a leak and performance issues, InputActions.UI.Disable() has not been called.");
-        UnityEngine.Debug.Assert(!m_Inventory.enabled, "This will cause a leak and performance issues, InputActions.Inventory.Disable() has not been called.");
+        UnityEngine.Debug.Assert(!m_Puzzle.enabled, "This will cause a leak and performance issues, InputActions.Puzzle.Disable() has not been called.");
     }
 
     /// <summary>
@@ -1653,29 +1653,29 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
     /// </summary>
     public UIActions @UI => new UIActions(this);
 
-    // Inventory
-    private readonly InputActionMap m_Inventory;
-    private List<IInventoryActions> m_InventoryActionsCallbackInterfaces = new List<IInventoryActions>();
-    private readonly InputAction m_Inventory_OpenInventory;
+    // Puzzle
+    private readonly InputActionMap m_Puzzle;
+    private List<IPuzzleActions> m_PuzzleActionsCallbackInterfaces = new List<IPuzzleActions>();
+    private readonly InputAction m_Puzzle_ToggleLogBook;
     /// <summary>
-    /// Provides access to input actions defined in input action map "Inventory".
+    /// Provides access to input actions defined in input action map "Puzzle".
     /// </summary>
-    public struct InventoryActions
+    public struct PuzzleActions
     {
         private @InputActions m_Wrapper;
 
         /// <summary>
         /// Construct a new instance of the input action map wrapper class.
         /// </summary>
-        public InventoryActions(@InputActions wrapper) { m_Wrapper = wrapper; }
+        public PuzzleActions(@InputActions wrapper) { m_Wrapper = wrapper; }
         /// <summary>
-        /// Provides access to the underlying input action "Inventory/OpenInventory".
+        /// Provides access to the underlying input action "Puzzle/ToggleLogBook".
         /// </summary>
-        public InputAction ToggleLogbook => m_Wrapper.m_Inventory_OpenInventory;
+        public InputAction @ToggleLogBook => m_Wrapper.m_Puzzle_ToggleLogBook;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
-        public InputActionMap Get() { return m_Wrapper.m_Inventory; }
+        public InputActionMap Get() { return m_Wrapper.m_Puzzle; }
         /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Enable()" />
         public void Enable() { Get().Enable(); }
         /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Disable()" />
@@ -1683,9 +1683,9 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
         /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.enabled" />
         public bool enabled => Get().enabled;
         /// <summary>
-        /// Implicitly converts an <see ref="InventoryActions" /> to an <see ref="InputActionMap" /> instance.
+        /// Implicitly converts an <see ref="PuzzleActions" /> to an <see ref="InputActionMap" /> instance.
         /// </summary>
-        public static implicit operator InputActionMap(InventoryActions set) { return set.Get(); }
+        public static implicit operator InputActionMap(PuzzleActions set) { return set.Get(); }
         /// <summary>
         /// Adds <see cref="InputAction.started"/>, <see cref="InputAction.performed"/> and <see cref="InputAction.canceled"/> callbacks provided via <param cref="instance" /> on all input actions contained in this map.
         /// </summary>
@@ -1693,14 +1693,14 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
         /// <remarks>
         /// If <paramref name="instance" /> is <c>null</c> or <paramref name="instance"/> have already been added this method does nothing.
         /// </remarks>
-        /// <seealso cref="InventoryActions" />
-        public void AddCallbacks(IInventoryActions instance)
+        /// <seealso cref="PuzzleActions" />
+        public void AddCallbacks(IPuzzleActions instance)
         {
-            if (instance == null || m_Wrapper.m_InventoryActionsCallbackInterfaces.Contains(instance)) return;
-            m_Wrapper.m_InventoryActionsCallbackInterfaces.Add(instance);
-            ToggleLogbook.started += instance.OnToggleLogbook;
-            ToggleLogbook.performed += instance.OnToggleLogbook;
-            ToggleLogbook.canceled += instance.OnToggleLogbook;
+            if (instance == null || m_Wrapper.m_PuzzleActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_PuzzleActionsCallbackInterfaces.Add(instance);
+            @ToggleLogBook.started += instance.OnToggleLogBook;
+            @ToggleLogBook.performed += instance.OnToggleLogBook;
+            @ToggleLogBook.canceled += instance.OnToggleLogBook;
         }
 
         /// <summary>
@@ -1709,21 +1709,21 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
         /// <remarks>
         /// Calling this method when <paramref name="instance" /> have not previously been registered has no side-effects.
         /// </remarks>
-        /// <seealso cref="InventoryActions" />
-        private void UnregisterCallbacks(IInventoryActions instance)
+        /// <seealso cref="PuzzleActions" />
+        private void UnregisterCallbacks(IPuzzleActions instance)
         {
-            ToggleLogbook.started -= instance.OnToggleLogbook;
-            ToggleLogbook.performed -= instance.OnToggleLogbook;
-            ToggleLogbook.canceled -= instance.OnToggleLogbook;
+            @ToggleLogBook.started -= instance.OnToggleLogBook;
+            @ToggleLogBook.performed -= instance.OnToggleLogBook;
+            @ToggleLogBook.canceled -= instance.OnToggleLogBook;
         }
 
         /// <summary>
-        /// Unregisters <param cref="instance" /> and unregisters all input action callbacks via <see cref="InventoryActions.UnregisterCallbacks(IInventoryActions)" />.
+        /// Unregisters <param cref="instance" /> and unregisters all input action callbacks via <see cref="PuzzleActions.UnregisterCallbacks(IPuzzleActions)" />.
         /// </summary>
-        /// <seealso cref="InventoryActions.UnregisterCallbacks(IInventoryActions)" />
-        public void RemoveCallbacks(IInventoryActions instance)
+        /// <seealso cref="PuzzleActions.UnregisterCallbacks(IPuzzleActions)" />
+        public void RemoveCallbacks(IPuzzleActions instance)
         {
-            if (m_Wrapper.m_InventoryActionsCallbackInterfaces.Remove(instance))
+            if (m_Wrapper.m_PuzzleActionsCallbackInterfaces.Remove(instance))
                 UnregisterCallbacks(instance);
         }
 
@@ -1733,21 +1733,21 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
         /// <remarks>
         /// If <paramref name="instance" /> is <c>null</c>, calling this method will only unregister all existing callbacks but not register any new callbacks.
         /// </remarks>
-        /// <seealso cref="InventoryActions.AddCallbacks(IInventoryActions)" />
-        /// <seealso cref="InventoryActions.RemoveCallbacks(IInventoryActions)" />
-        /// <seealso cref="InventoryActions.UnregisterCallbacks(IInventoryActions)" />
-        public void SetCallbacks(IInventoryActions instance)
+        /// <seealso cref="PuzzleActions.AddCallbacks(IPuzzleActions)" />
+        /// <seealso cref="PuzzleActions.RemoveCallbacks(IPuzzleActions)" />
+        /// <seealso cref="PuzzleActions.UnregisterCallbacks(IPuzzleActions)" />
+        public void SetCallbacks(IPuzzleActions instance)
         {
-            foreach (var item in m_Wrapper.m_InventoryActionsCallbackInterfaces)
+            foreach (var item in m_Wrapper.m_PuzzleActionsCallbackInterfaces)
                 UnregisterCallbacks(item);
-            m_Wrapper.m_InventoryActionsCallbackInterfaces.Clear();
+            m_Wrapper.m_PuzzleActionsCallbackInterfaces.Clear();
             AddCallbacks(instance);
         }
     }
     /// <summary>
-    /// Provides a new <see cref="InventoryActions" /> instance referencing this action map.
+    /// Provides a new <see cref="PuzzleActions" /> instance referencing this action map.
     /// </summary>
-    public InventoryActions @Inventory => new InventoryActions(this);
+    public PuzzleActions @Puzzle => new PuzzleActions(this);
     private int m_KeyboardMouseSchemeIndex = -1;
     /// <summary>
     /// Provides access to the input control scheme.
@@ -1963,18 +1963,18 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
         void OnTrackedDeviceOrientation(InputAction.CallbackContext context);
     }
     /// <summary>
-    /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "Inventory" which allows adding and removing callbacks.
+    /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "Puzzle" which allows adding and removing callbacks.
     /// </summary>
-    /// <seealso cref="InventoryActions.AddCallbacks(IInventoryActions)" />
-    /// <seealso cref="InventoryActions.RemoveCallbacks(IInventoryActions)" />
-    public interface IInventoryActions
+    /// <seealso cref="PuzzleActions.AddCallbacks(IPuzzleActions)" />
+    /// <seealso cref="PuzzleActions.RemoveCallbacks(IPuzzleActions)" />
+    public interface IPuzzleActions
     {
         /// <summary>
-        /// Method invoked when associated input action "Open Inventory" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// Method invoked when associated input action "ToggleLogBook" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
         /// </summary>
         /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
-        void OnToggleLogbook(InputAction.CallbackContext context);
+        void OnToggleLogBook(InputAction.CallbackContext context);
     }
 }

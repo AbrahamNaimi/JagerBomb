@@ -992,11 +992,11 @@
             ]
         },
         {
-            "name": "Inventory",
+            "name": "Puzzle",
             "id": "f2fe36f2-9f28-4871-899a-3aceae4c7d66",
             "actions": [
                 {
-                    "name": "Open Inventory",
+                    "name": "ToggleLogBook",
                     "type": "Button",
                     "id": "e1bcd422-bf45-4fbd-95e6-f8a7de38aac8",
                     "expectedControlType": "",
@@ -1013,7 +1013,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
-                    "action": "Open Inventory",
+                    "action": "ToggleLogBook",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
