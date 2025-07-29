@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 public class PauseMenuManager : MonoBehaviour
 {
@@ -100,5 +101,16 @@ public class PauseMenuManager : MonoBehaviour
     public void OnResumeButton()
     {
         ResumeGame();
+    }
+
+    public void QuitGame()
+    {
+        Application.Quit();
+    }
+
+    public void ReturnToMainMenu() 
+    {
+        Time.timeScale = 1f;
+        SceneManager.LoadScene("Main menu scene"); 
     }
 }
