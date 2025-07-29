@@ -481,7 +481,7 @@ GameObject:
   - component: {fileID: 1063669516}
   - component: {fileID: 1063669520}
   m_Layer: 5
-  m_Name: Canvas
+  m_Name: MainMenuCanvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -583,6 +583,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f1449edeb15bd041ba991f5f45c4e5b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  pauseMenuCanvas: {fileID: 0}
 --- !u!1 &1151738446
 GameObject:
   m_ObjectHideFlags: 0
