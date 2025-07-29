@@ -31,6 +31,7 @@ public class ButtonPuzzleController : MonoBehaviour, IPuzzle
     void Start()
     {
         SetButtonColors();
+        ClearDisplayLights();
     }
 
     void SetButtonColors()
@@ -43,19 +44,19 @@ public class ButtonPuzzleController : MonoBehaviour, IPuzzle
         }
     }
 
-    public void ButtonPressed(GameObject button)
+    public void ObjectClicked(GameObject hitGameObject)
     {
-        if (button.name.Contains("Reset"))
+        if (hitGameObject.name.Contains("Reset"))
         {
             ClearDisplayLights();
             return;
         }
 
-        Color buttonColor = button.GetComponent<Renderer>().material.color;
+        Color buttonColor = hitGameObject.GetComponent<Renderer>().material.color;
         int buttonIndex = 0;
         try
         {
-            buttonIndex = Int32.Parse(button.name.Split(" ")?[1]);
+            buttonIndex = Int32.Parse(hitGameObject.name.Split(" ")?[1]);
         }
         catch (Exception e)
         {

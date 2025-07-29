@@ -4,11 +4,13 @@ using UnityEngine;
 public class InventoryManager : MonoBehaviour
 {
     public GameObject logBook;
+    private CanvasGroup logbookCanvas;
     private bool _logbookOpen = false;
     private InputActions _inputActions;
     
     void Start()
     {
+        logbookCanvas = logBook.GetComponent<CanvasGroup>();
         _inputActions.Puzzle.ToggleLogBook.performed += ctx => ToggleLogbook();
     }
 
@@ -30,6 +32,6 @@ public class InventoryManager : MonoBehaviour
     private void ToggleLogbook()
     {
         _logbookOpen = !_logbookOpen;
-        logBook.SetActive(_logbookOpen);
+        logbookCanvas.alpha = _logbookOpen ? 1 : 0;
     }
 }
