@@ -1,91 +1,94 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Puzzles;
-using Unity.VisualScripting;
+using Puzzles.Logbook;
 using UnityEngine;
-using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
-
-public class ButtonPuzzleController : MonoBehaviour, IPuzzle
+namespace Puzzles
 {
-    public GameObject[] buttons;
-    public GameObject[] displayLights;
-
-    private List<Color> _buttonColorPossibilities = new()
-        { Color.red, Color.green, Color.blue, Color.cyan, Color.hotPink, Color.gold, Color.violetRed };
-
-    private List<int> _pressedButtons = new();
-
-    // Will be used for moving button when clicked
-    private Vector3 _buttonClickedOffset = new Vector3(0f, 0f, 0.05f);
-    private float _buttonMoveDuration = 0.2f;
-    private Vector3 _buttonOriginalPosition;
-    private bool _buttonIsMoving;
-
-    private List<int> solution = new() { 1, 2, 3, 4 };
-    public bool isPuzzleSolved { get; private set; } = false;
-
-
-    void Start()
+    public class ButtonPuzzleController : MonoBehaviour, IPuzzle
     {
-        SetButtonColors();
-        ClearDisplayLights();
-    }
+        public GameObject[] buttons;
+        public GameObject[] displayLights;
+        public bool IsPuzzleSolved { get; private set; } = false;
+        public LogbookController logbookController;
 
-    void SetButtonColors()
-    {
-        foreach (GameObject button in buttons)
+
+        private List<Color> _buttonColorPossibilities = new()
+            { Color.red, Color.green, Color.blue, Color.cyan, Color.hotPink, Color.gold, Color.violetRed };
+
+        private List<int> _pressedButtons = new();
+
+        private List<int> _solution = new() { 1, 2, 3, 4 };
+
+        void Start()
         {
-            int colorIndex = Random.Range(0, _buttonColorPossibilities.Count);
-            button.GetComponent<Renderer>().material.color = _buttonColorPossibilities[colorIndex];
-            _buttonColorPossibilities.RemoveAt(colorIndex);
-        }
-    }
-
-    public void ObjectClicked(GameObject hitGameObject)
-    {
-        if (hitGameObject.name.Contains("Reset"))
-        {
+            SetButtonColors();
             ClearDisplayLights();
-            return;
+            GenerateLogbookPage();
         }
 
-        Color buttonColor = hitGameObject.GetComponent<Renderer>().material.color;
-        int buttonIndex = 0;
-        try
+        public void ObjectClicked(GameObject hitGameObject)
         {
-            buttonIndex = Int32.Parse(hitGameObject.name.Split(" ")?[1]);
+            if (hitGameObject.name.Contains("Reset"))
+            {
+                ClearDisplayLights();
+                return;
+            }
+
+            Color buttonColor = hitGameObject.GetComponent<Renderer>().material.color;
+            int buttonIndex = 0;
+            try
+            {
+                buttonIndex = Int32.Parse(hitGameObject.name.Split(" ")?[1]);
+            }
+            catch (NullReferenceException e)
+            {
+                Debug.LogError("Button name must use syntax 'Button {ButtonIndex} \n'" + e.Message);
+                return;
+            }
+
+
+            if (_pressedButtons.Contains(buttonIndex)) return;
+
+            displayLights[_pressedButtons.Count].GetComponent<Renderer>().material.color = buttonColor;
+            _pressedButtons.Add(buttonIndex);
+
+            SetIsPuzzleSolved();
         }
-        catch (Exception e)
+
+        private void SetButtonColors()
         {
-            Debug.LogError("Button name must use syntax 'Button {ButtonIndex} \n'" + e.Message );
-            return;
+            foreach (GameObject button in buttons)
+            {
+                int colorIndex = Random.Range(0, _buttonColorPossibilities.Count);
+                button.GetComponent<Renderer>().material.color = _buttonColorPossibilities[colorIndex];
+                _buttonColorPossibilities.RemoveAt(colorIndex);
+            }
         }
-        
 
-        if (_pressedButtons.Contains(buttonIndex)) return;
-
-        displayLights[_pressedButtons.Count].GetComponent<Renderer>().material.color = buttonColor;
-        _pressedButtons.Add(buttonIndex);
-        
-        SetIsPuzzleSolved();
-    }
-
-    private void ClearDisplayLights()
-    {
-        foreach (GameObject displayLight in displayLights)
+        private void GenerateLogbookPage()
         {
-            displayLight.GetComponent<Renderer>().material.color = Color.clear;
+            logbookController.AddPage(new LogBookPage("Colour button puzzle", "Colour button puzzle",
+                "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic type"));
         }
-        isPuzzleSolved = false;
 
-        _pressedButtons = new();
-    }
+        private void ClearDisplayLights()
+        {
+            foreach (GameObject displayLight in displayLights)
+            {
+                displayLight.GetComponent<Renderer>().material.color = Color.clear;
+            }
 
-    private void SetIsPuzzleSolved()
-    {
-        isPuzzleSolved = _pressedButtons.SequenceEqual(solution);
+            IsPuzzleSolved = false;
+
+            _pressedButtons = new();
+        }
+
+        private void SetIsPuzzleSolved()
+        {
+            IsPuzzleSolved = _pressedButtons.SequenceEqual(_solution);
+        }
     }
 }

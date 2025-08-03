@@ -6,16 +6,16 @@ namespace Puzzles.Puzzle_Generation
 {
     public class CaesarCipherEncoder
     {
-        private List<string> _easyCodeWords = new () {"BOMBS", "WICK", "WIRE", "MINE", "ATOM"};
-        private List<string> _mediumCodeWords = new () {"RETREE", "REFEED"};
-        private List<string> _hardCodeWords = new () {"RETREE", "REFEED", "TETHER", "CREEPER", "PEPPERED"};
+        private List<string> _easyCodeWords = new() { "BOMBS", "WICK", "WIRE", "MINE", "ATOM" };
+        private List<string> _mediumCodeWords = new() { "RETREE", "REFEED" };
+        private List<string> _hardCodeWords = new() { "RETREE", "REFEED", "TETHER", "CREEPER", "PEPPERED" };
         private Drunkness _drunkness = (Drunkness)PlayerPrefs.GetInt("Drunkness");
         private string _caesarEncoding = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
-        
+
         public string EncodeCaesarCipher()
         {
             (string codeWord, int shiftValue) = GetEncodingVariables();
-            
+
             string encodedWord = "";
             foreach (char c in codeWord)
             {
@@ -48,7 +48,7 @@ namespace Puzzles.Puzzle_Generation
                     codeWord = _hardCodeWords[rand.Next(0, _hardCodeWords.Count)];
                     break;
             }
-            
+
             return (codeWord, shiftValue);
         }
     }

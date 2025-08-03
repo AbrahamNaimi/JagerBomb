@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using NUnit.Framework;
-using Unity.Mathematics;
+﻿using System.Linq;
 using UnityEngine;
 
 namespace Puzzles.Puzzle_Generation
@@ -9,9 +6,9 @@ namespace Puzzles.Puzzle_Generation
     public class PuzzleGenerator
     {
         private CaesarCipherEncoder _caesarCipherEncoder;
-        
+
         // puzzleSlot 5 contains the timer and should always be active, can be excluded later but is left for now in case random puzzle slot allocation will be implemented
-        private int[] _easyPuzzles = { 0, 1, 5 }; 
+        private int[] _easyPuzzles = { 0, 1, 5 };
         private int[] _mediumPuzzles = { 0, 1, 2, 3, 5 };
         private int[] _hardPuzzles = { 0, 1, 2, 3, 4, 5 };
 
@@ -23,7 +20,7 @@ namespace Puzzles.Puzzle_Generation
 
         public void SetPuzzles(GameObject[] puzzleSlots)
         {
-            int[] toBeActivatedPuzzles = new int[] { };
+            int[] toBeActivatedPuzzles = { };
             switch ((Drunkness)PlayerPrefs.GetInt("Drunkness"))
             {
                 case Drunkness.Light:
@@ -39,9 +36,9 @@ namespace Puzzles.Puzzle_Generation
 
             foreach (var (puzzleSlot, index) in puzzleSlots.Select((slot, index) => (slot, index)))
             {
-                if (!toBeActivatedPuzzles.Contains(index))
+                if (toBeActivatedPuzzles.Contains(index))
                 {
-                    puzzleSlot.SetActive(false);
+                    puzzleSlot.SetActive(true);
                 }
             }
         }
