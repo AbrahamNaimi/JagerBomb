@@ -2,6 +2,6 @@
 {
     public interface IPuzzle
     {
-        bool isPuzzleSolved { get; }
+        bool IsPuzzleSolved { get; }
     }
 }

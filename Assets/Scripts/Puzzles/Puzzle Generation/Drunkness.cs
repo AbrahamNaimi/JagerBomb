@@ -1,4 +1,4 @@
-﻿namespace Puzzles
+﻿namespace Puzzles.Puzzle_Generation
 {
     public enum Drunkness
     {
