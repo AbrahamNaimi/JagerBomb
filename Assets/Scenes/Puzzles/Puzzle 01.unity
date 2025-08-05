@@ -2836,13 +2836,14 @@ GameObject:
   - component: {fileID: 1308846598}
   - component: {fileID: 1308846597}
   - component: {fileID: 1308846596}
+  - component: {fileID: 1308846599}
   m_Layer: 0
   m_Name: Slot 4
   m_TagString: Puzzle
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1308846595
 Transform:
   m_ObjectHideFlags: 0
@@ -2932,6 +2933,19 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1308846594}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &1308846599
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1308846594}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 32174fc779488b445b9202fd951689a9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  logbookController: {fileID: 963536896}
 --- !u!1 &1370280370
 GameObject:
   m_ObjectHideFlags: 0
@@ -4419,7 +4433,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1860776691
 Transform:
   m_ObjectHideFlags: 0

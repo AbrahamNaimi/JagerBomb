@@ -14,7 +14,7 @@ namespace Puzzles.Puzzle_Generation
 
         public PuzzleGenerator()
         {
-            PlayerPrefs.SetInt("Drunkness", (int)Drunkness.Light);
+            PlayerPrefs.SetInt("Drunkness", (int)Drunkness.Heavy);
             PlayerPrefs.Save();
         }
 
