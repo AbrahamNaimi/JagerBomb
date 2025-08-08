@@ -12,9 +12,9 @@ public class MazePuzzleController : MonoBehaviour, IPuzzle
     private const int GRID_WIDTH = 6;
     private const int GRID_HEIGHT = 5;
 
-    private MazeCell[,] grid;
-    private Vector2Int playerPos = new Vector2Int(0, 0);
-    private Vector2Int goalPos = new Vector2Int(GRID_WIDTH - 1, GRID_HEIGHT - 1);
+    private MazeCell[,] _grid;
+    private Vector2Int _playerPos = new(0, 0);
+    private Vector2Int _goalPos = new(GRID_WIDTH - 1, GRID_HEIGHT - 1);
 
     void Start()
     {
@@ -25,11 +25,23 @@ public class MazePuzzleController : MonoBehaviour, IPuzzle
 
     public void ObjectClicked(GameObject hitGameObject)
     {
-        string name = hitGameObject.name.ToLower();
-        if (name.Contains("up")) Move(Vector2Int.down);   // visually up
-        if (name.Contains("down")) Move(Vector2Int.up);   // visually down
-        if (name.Contains("left")) Move(Vector2Int.left);
-        if (name.Contains("right")) Move(Vector2Int.right);
+        string objectName = hitGameObject.name;
+
+        switch (objectName)
+        {
+            case "ArrowUp":
+                Move(Vector2Int.down); // Visually up
+                break;
+            case "ArrowDown":
+                Move(Vector2Int.up); // Visually down
+                break;
+            case "ArrowLeft":
+                Move(Vector2Int.left);
+                break;
+            case "ArrowRight":
+                Move(Vector2Int.right);
+                break;
+        }
     }
 
     private void InitializeGrid()
@@ -44,23 +56,20 @@ public class MazePuzzleController : MonoBehaviour, IPuzzle
             return;
         }
 
-        // Sort by Z (rows), then X (columns)
         cubeTransforms = cubeTransforms
-            .OrderByDescending(t => t.localPosition.z) // top to bottom
-            .ThenBy(t => t.localPosition.x)            // left to right
+            .OrderBy(t => int.Parse(t.name.Split(" ")![1]))
             .ToList();
 
-        grid = new MazeCell[GRID_WIDTH, GRID_HEIGHT];
+        _grid = new MazeCell[GRID_WIDTH, GRID_HEIGHT];
 
         for (int i = 0; i < cubeTransforms.Count; i++)
         {
             int x = i % GRID_WIDTH;
             int y = i / GRID_WIDTH;
 
-            grid[x, y] = new MazeCell(x, y, cubeTransforms[i].gameObject);
+            _grid[x, y] = new MazeCell(x, y, cubeTransforms[i].gameObject);
         }
     }
-
 
 
     private void HighlightPlayer()
@@ -69,14 +78,14 @@ public class MazePuzzleController : MonoBehaviour, IPuzzle
         {
             for (int x = 0; x < GRID_WIDTH; x++)
             {
-                var cell = grid[x, y];
+                var cell = _grid[x, y];
                 if (cell == null || cell.visualCube == null) continue;
 
                 var rend = cell.visualCube.GetComponent<Renderer>();
                 if (rend == null) continue;
 
-                if (playerPos == new Vector2Int(x, y)) rend.material.color = Color.red;
-                else if (goalPos == new Vector2Int(x, y)) rend.material.color = Color.green;
+                if (_playerPos == new Vector2Int(x, y)) rend.material.color = Color.red;
+                else if (_goalPos == new Vector2Int(x, y)) rend.material.color = Color.green;
                 else rend.material.color = Color.white;
             }
         }
@@ -84,15 +93,14 @@ public class MazePuzzleController : MonoBehaviour, IPuzzle
 
     public void Move(Vector2Int dir)
     {
-        var newPos = playerPos + dir;
+        var newPos = _playerPos + dir;
         if (newPos.x < 0 || newPos.x >= GRID_WIDTH || newPos.y < 0 || newPos.y >= GRID_HEIGHT)
             return;
 
-        // Optional: add wall check here using grid[playerPos.x, playerPos.y].HasWall(dir)
-        playerPos = newPos;
+        _playerPos = newPos;
         HighlightPlayer();
 
-        if (playerPos == goalPos)
+        if (_playerPos == _goalPos)
         {
             IsPuzzleSolved = true;
             Debug.Log("Maze opgelost!");
