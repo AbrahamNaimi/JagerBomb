@@ -159,6 +159,7 @@ namespace Puzzles
                     puzzleController.ObjectClicked(hitCollider.gameObject);
                     break;
                 case MazePuzzleController puzzleController:
+                    puzzleController.ObjectClicked(hitCollider.gameObject);
                     break;
             }
         }
