@@ -16,7 +16,7 @@ namespace Puzzles
         public GameObject isSolvedLight;
         public bool IsBombSolved { get; private set; } = false;
         public float cameraDistanceToPuzzle = 3.0f;
-        public GameObject logBook;
+        public TimerController timerController;
 
         private Vector3 _screenPoint;
         private Vector3 _offset;
@@ -40,6 +40,8 @@ namespace Puzzles
         
             _cameraStartPosition = camera.transform.position;
             timerCamera.enabled = false;
+            
+            timerController.StartTimer(120.0f);
         }
 
         void Update()

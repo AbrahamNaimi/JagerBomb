@@ -3420,8 +3420,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6ff6ee5f937b2bc4692576c69cc01b60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  startTimeInSeconds: 120
   timerText: {fileID: 161781477}
+  isStopped: 1
 --- !u!65 &1469785992
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -4999,7 +4999,7 @@ MonoBehaviour:
   - {fileID: 1860776690}
   isSolvedLight: {fileID: 1171848401}
   cameraDistanceToPuzzle: 3
-  logBook: {fileID: 0}
+  timerController: {fileID: 1469785991}
 --- !u!1 &2102440032
 GameObject:
   m_ObjectHideFlags: 0
