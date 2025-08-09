@@ -36,10 +36,10 @@ public class MazePuzzleController : MonoBehaviour, IPuzzle
         switch (objectName)
         {
             case "ArrowUp":
-                AttemptMove(Vector2Int.down); // Visually up
+                AttemptMove(Vector2Int.down);
                 break;
             case "ArrowDown":
-                AttemptMove(Vector2Int.up); // Visually down
+                AttemptMove(Vector2Int.up);
                 break;
             case "ArrowLeft":
                 AttemptMove(Vector2Int.left);
@@ -101,7 +101,6 @@ public class MazePuzzleController : MonoBehaviour, IPuzzle
             }
         }
 
-        // Trace path from goal to start
         _solutionPath.Clear();
         MazeCell goal = _grid[_goalPos.x, _goalPos.y];
         while (goal != start)
@@ -135,7 +134,6 @@ public class MazePuzzleController : MonoBehaviour, IPuzzle
         MazeCell current = _grid[_playerPos.x, _playerPos.y];
         if (HasWall(current, dir))
         {
-            Debug.Log("Wall hit! Resetting player.");
             _playerPos = new Vector2Int(0, 0);
             HighlightPlayer();
             StartCoroutine(FlashAllCubesRed());
@@ -153,7 +151,6 @@ public class MazePuzzleController : MonoBehaviour, IPuzzle
         {
             IsPuzzleSolved = true;
             _isLocked = true;
-            Debug.Log("Maze opgelost!");
             StartCoroutine(FlashVictory());
         }
     }
@@ -188,7 +185,7 @@ public class MazePuzzleController : MonoBehaviour, IPuzzle
         }
 
         yield return new WaitForSeconds(duration);
-        HighlightPlayer(); // Restore colors
+        HighlightPlayer();
     }
 
     private IEnumerator FlashVictory()
