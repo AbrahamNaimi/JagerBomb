@@ -3,6 +3,7 @@ using TMPro;
 using UnityEngine.InputSystem;
 using StarterAssets;
 using Cinemachine;
+using System.Collections;
 
 [RequireComponent(typeof(Collider))]
 public class SitSpot : MonoBehaviour
@@ -25,6 +26,10 @@ public class SitSpot : MonoBehaviour
     [Header("Input")]
     public Key interactKey = Key.E;
 
+    [Header("Fade UI")]
+    public CanvasGroup fadeCanvas;
+    public float fadeDuration = 0.5f;
+
     // State
     bool playerInZone, isSitting;
     Vector3 savedPlayerPos;
@@ -35,7 +40,6 @@ public class SitSpot : MonoBehaviour
     float seatPitch, seatYaw;                       // seated look angles
 
     public bool IsSitting => isSitting;
-
 
     void Awake()
     {
@@ -55,6 +59,8 @@ public class SitSpot : MonoBehaviour
         if (!promptText) promptText = GetComponentInChildren<TextMeshProUGUI>(true);
 
         TogglePrompt(false, false);
+
+        if (fadeCanvas) fadeCanvas.alpha = 0f; // start fully visible
     }
 
     void Update()
@@ -62,8 +68,8 @@ public class SitSpot : MonoBehaviour
         if (playerInZone && Keyboard.current != null && interactKey != Key.None &&
             Keyboard.current[interactKey].wasPressedThisFrame)
         {
-            if (!isSitting) Sit();
-            else Stand();
+            if (!isSitting) StartCoroutine(SitRoutine());
+            else StartCoroutine(StandRoutine());
         }
 
         if (!isSitting) return;
@@ -81,6 +87,24 @@ public class SitSpot : MonoBehaviour
         if (starterInputs) starterInputs.look = Vector2.zero;
     }
 
+    IEnumerator SitRoutine()
+    {
+        yield return Fade(1f); // fade to black
+
+        Sit();
+
+        yield return Fade(0f); // fade back in
+    }
+
+    IEnumerator StandRoutine()
+    {
+        yield return Fade(1f); // fade to black
+
+        Stand();
+
+        yield return Fade(0f); // fade back in
+    }
+
     void Sit()
     {
         if (!playerCapsule || !fpc || !starterInputs || !vcam || !seatAnchor) return;
@@ -95,7 +119,7 @@ public class SitSpot : MonoBehaviour
         vcam.Follow = seatAnchor;
         vcam.LookAt = seatAnchor;
 
-        // Move player right to the seat (so collisions/ears match)
+        // Move player right to the seat
         playerCapsule.transform.SetPositionAndRotation(seatAnchor.position, seatAnchor.rotation);
         Physics.SyncTransforms();
 
@@ -106,7 +130,7 @@ public class SitSpot : MonoBehaviour
 
         SetPlayerVisible(false);
         isSitting = true;
-        TogglePrompt(true, true); // "Press E to stand up"
+        TogglePrompt(true, true);
     }
 
     void Stand()
@@ -123,7 +147,7 @@ public class SitSpot : MonoBehaviour
 
         SetPlayerVisible(true);
         isSitting = false;
-        TogglePrompt(playerInZone, false); // "Press E to sit down" if still in trigger
+        TogglePrompt(playerInZone, false);
     }
 
     void ApplySeatedLook()
@@ -133,7 +157,6 @@ public class SitSpot : MonoBehaviour
         var look = starterInputs.look;
         if (look.sqrMagnitude <= 0.0001f) return;
 
-        // Match Starter Assets feel: mouse (no dt), gamepad (scaled by dt)
         bool isMouse = playerInput != null && playerInput.currentControlScheme == "KeyboardMouse";
         float dtMul = isMouse ? 1f : Time.deltaTime;
 
@@ -142,6 +165,23 @@ public class SitSpot : MonoBehaviour
 
         seatPitch = ClampAngle(seatPitch, fpc.BottomClamp, fpc.TopClamp);
         seatAnchor.rotation = Quaternion.Euler(seatPitch, seatYaw, 0f);
+    }
+
+    IEnumerator Fade(float targetAlpha)
+    {
+        if (!fadeCanvas) yield break;
+
+        float startAlpha = fadeCanvas.alpha;
+        float t = 0f;
+
+        while (t < 1f)
+        {
+            t += Time.deltaTime / fadeDuration;
+            fadeCanvas.alpha = Mathf.Lerp(startAlpha, targetAlpha, t);
+            yield return null;
+        }
+
+        fadeCanvas.alpha = targetAlpha;
     }
 
     // Helpers
