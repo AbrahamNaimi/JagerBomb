@@ -16084,7 +16084,7 @@ Camera:
     height: 1
   near clip plane: 0.2
   far clip plane: 500
-  field of view: 65
+  field of view: 75
   orthographic: 0
   orthographic size: 10
   m_Depth: 0
@@ -31147,7 +31147,7 @@ GameObject:
   - component: {fileID: 1554112977}
   - component: {fileID: 1554112976}
   m_Layer: 5
-  m_Name: Press E to sit
+  m_Name: Press E to do something
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -36476,7 +36476,7 @@ PrefabInstance:
       objectReference: {fileID: 414653045}
     - target: {fileID: 8762286023885395323, guid: 9c489a8547f4d9e4387da15a4ff82c81, type: 3}
       propertyPath: m_Lens.FieldOfView
-      value: 65
+      value: 75
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -37539,7 +37539,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1875767561
 MonoBehaviour:
   m_ObjectHideFlags: 0
