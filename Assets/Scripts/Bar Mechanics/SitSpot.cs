@@ -106,7 +106,7 @@ public class SitSpot : MonoBehaviour
 
         SetPlayerVisible(false);
         isSitting = true;
-        TogglePrompt(true, true); // "Press E to stand"
+        TogglePrompt(true, true); // "Press E to stand up"
     }
 
     void Stand()
@@ -123,7 +123,7 @@ public class SitSpot : MonoBehaviour
 
         SetPlayerVisible(true);
         isSitting = false;
-        TogglePrompt(playerInZone, false); // "Press E to sit" if still in trigger
+        TogglePrompt(playerInZone, false); // "Press E to sit down" if still in trigger
     }
 
     void ApplySeatedLook()
@@ -165,7 +165,7 @@ public class SitSpot : MonoBehaviour
     void TogglePrompt(bool show, bool showStandText)
     {
         if (promptRoot) promptRoot.SetActive(show);
-        if (promptText) promptText.text = showStandText ? "Press E to stand" : "Press E to sit";
+        if (promptText) promptText.text = showStandText ? "Press E to stand up" : "Press E to sit down";
     }
     void OnTriggerEnter(Collider other)
     {
