@@ -5,13 +5,27 @@ public class Drinkable : MonoBehaviour
 {
     [Header("Timings")]
     public float moveDuration = 1.0f;      // time to move to mouth
-    public float sipDuration  = 1.0f;      // time to "drink" (pause at mouth)
+    public float sipDuration = 1.0f;      // time to "drink" (pause at mouth)
     public float returnDuration = 1.0f;    // time to return
 
     [Header("Target")]
     public Transform seatAnchor;           // optional: assign SitSpot.seatAnchor; if null, uses camera
 
+    [Header("Audio")]
+    public AudioClip sipSound;              // assign your .mp3/.wav in inspector
+    public AudioSource audioSource;         // assign or will be auto-added
+
     public bool IsBusy { get; private set; }
+
+    void Awake()
+    {
+        if (!audioSource)
+        {
+            audioSource = GetComponent<AudioSource>();
+            if (!audioSource) audioSource = gameObject.AddComponent<AudioSource>();
+            audioSource.playOnAwake = false;
+        }
+    }
 
     public void Drink(Transform cam)
     {
@@ -31,12 +45,17 @@ public class Drinkable : MonoBehaviour
         Vector3 targetPos = seatAnchor ? seatAnchor.position : cam.position;
         Quaternion targetRot = seatAnchor ? seatAnchor.rotation : cam.rotation;
 
-        // move to target
+        // move to mouth
         yield return LerpPose(startPos, targetPos, startRot, targetRot, moveDuration);
 
-        // sip (just wait at mouth)
+        // sip (play sound & wait)
         if (sipDuration > 0f)
+        {
+            if (sipSound && audioSource) audioSource.PlayOneShot(sipSound);
             yield return new WaitForSeconds(sipDuration);
+        }
+
+        OnSipFinished();
 
         // return to start
         yield return LerpPose(targetPos, startPos, targetRot, startRot, returnDuration);
@@ -58,5 +77,10 @@ public class Drinkable : MonoBehaviour
         }
         transform.position = toPos;
         transform.rotation = toRot;
+    }
+
+    public void OnSipFinished()
+    {
+        UnityEngine.Debug.Log("message");
     }
 }
