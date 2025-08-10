@@ -34,6 +34,9 @@ public class SitSpot : MonoBehaviour
     PlayerInput playerInput;                        // detect mouse vs gamepad
     float seatPitch, seatYaw;                       // seated look angles
 
+    public bool IsSitting => isSitting;
+
+
     void Awake()
     {
         var col = GetComponent<Collider>();
