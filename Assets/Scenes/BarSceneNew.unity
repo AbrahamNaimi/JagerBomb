@@ -4496,7 +4496,7 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 8762286023885395323, guid: 9c489a8547f4d9e4387da15a4ff82c81, type: 3}
   m_PrefabInstance: {fileID: 1812177951}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 1171610277}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 45e653bab7fb20e499bda25e1b646fea, type: 3}
@@ -10703,7 +10703,7 @@ AudioSource:
   m_audioClip: {fileID: 8300000, guid: 29a4a703aac784e9bb9b8ebcd66fe384, type: 3}
   m_Resource: {fileID: 8300000, guid: 29a4a703aac784e9bb9b8ebcd66fe384, type: 3}
   m_PlayOnAwake: 1
-  m_Volume: 0.035
+  m_Volume: 0.24
   m_Pitch: 1
   Loop: 1
   Mute: 0
@@ -24460,6 +24460,29 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 1753955851246280489, guid: a30a1848c63e8504eade6a510775e9d2, type: 3}
   m_PrefabInstance: {fileID: 1169235315}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1171610277 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8762286023885395077, guid: 9c489a8547f4d9e4387da15a4ff82c81, type: 3}
+  m_PrefabInstance: {fileID: 1812177951}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1171610278
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1171610277}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3ad7459d3006d4135b88232ff44553fb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  voiceLines:
+  - {fileID: 8300000, guid: 3313e3049d5274c869999b7ee18951d7, type: 3}
+  - {fileID: 8300000, guid: a37a4246fae75423397ccd8e7870150a, type: 3}
+  - {fileID: 8300000, guid: 4edf00e190fa048059ba15eea2a977fa, type: 3}
+  minDelay: 0.5
+  maxDelay: 1.7
 --- !u!1001 &1174028748
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -30475,7 +30498,7 @@ MonoBehaviour:
   promptText: {fileID: 1554112976}
   interactKey: 19
   fadeCanvas: {fileID: 1849001048}
-  fadeDuration: 0.25
+  fadeDuration: 0.18
 --- !u!1001 &1478821907
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -38082,7 +38105,10 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 8762286023885395322, guid: 9c489a8547f4d9e4387da15a4ff82c81, type: 3}
       insertIndex: -1
       addedObject: {fileID: 770902534}
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 8762286023885395077, guid: 9c489a8547f4d9e4387da15a4ff82c81, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1171610278}
   m_SourcePrefab: {fileID: 100100000, guid: 9c489a8547f4d9e4387da15a4ff82c81, type: 3}
 --- !u!1001 &1818560093
 PrefabInstance:

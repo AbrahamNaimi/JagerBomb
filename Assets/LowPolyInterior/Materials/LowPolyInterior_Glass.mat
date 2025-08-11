@@ -36,13 +36,12 @@ Material:
     RenderType: Transparent
   disabledShaderPasses:
   - DistortionVectors
-  - MOTIONVECTORS
+  - SHADOWCASTER
   - TransparentDepthPrepass
   - TransparentDepthPostpass
   - TransparentBackface
   - RayTracingPrepass
   - DepthOnly
-  - SHADOWCASTER
   m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
