@@ -158,6 +158,9 @@ namespace Puzzles
                 case CaesarCipherPuzzleController puzzleController:
                     puzzleController.ObjectClicked(hitCollider.gameObject);
                     break;
+                case MazePuzzleController puzzleController:
+                    puzzleController.ObjectClicked(hitCollider.gameObject);
+                    break;
             }
         }
     }
