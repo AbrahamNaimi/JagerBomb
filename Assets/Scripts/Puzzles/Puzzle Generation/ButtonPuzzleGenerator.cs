@@ -35,8 +35,6 @@ namespace Puzzles.Puzzle_Generation
     
     public class ButtonPuzzleGenerator
     {
-        
-
         private readonly List<Color[]> _lightDrunknessColors = new()
         {
             new[] { Color.red, Color.green, Color.blue, Color.yellow },
@@ -58,12 +56,22 @@ namespace Puzzles.Puzzle_Generation
             new[] { Color.yellow, Color.yellowGreen, Color.softYellow, Color.blanchedAlmond },
             new[] { Color.red, Color.hotPink, Color.purple, Color.maroon }
         };
+        
+        private Drunkness _drunkness;
+
+        private Drunkness GetDrunkness()
+        {
+            if (_drunkness == 0)
+            {
+                _drunkness = (Drunkness)PlayerPrefs.GetInt("Drunkness");
+            }
+            return _drunkness;
+        }
 
         public Color[] GenerateButtonColors()
         {
-            Drunkness drunkness = (Drunkness)PlayerPrefs.GetInt("Drunkness");
             List<Color[]> availableColors;
-            switch (drunkness)
+            switch (GetDrunkness())
             {
                 case Drunkness.Heavy:
                     availableColors = _heavyDrunknessColors;
@@ -87,13 +95,16 @@ namespace Puzzles.Puzzle_Generation
                 buttonColorNames.Add($"<color=#{ColorUtility.ToHtmlStringRGBA(color)}>{Colors.NameMap[color]}</color>");
             }
 
-            string logBookPage = $"One of the four buttons will flash initially. \n" +
-                                 $"Using the table below, find out which button should be pressed. \n" +
-                                 $"The same button as before will flash, followed by another. Repeat the button presses in the corresponding order. \n" +
-                                 $"The display at the top will show how many sequences have been completed, and how many are still to come. \n" +
-                                 $"The sequence will lengthen every time, making a mistake will cost you {buttonFlashSpeed} seconds and reset the sequence. \n \n \n" +
+            string drunknessWarning = GetDrunkness() != Drunkness.Light ? "The colors are a bit fuzzy. Did you have a little too much fun yesterday?" : "";
+
+            string logBookPage = "One of the four buttons will flash initially. \n" +
+                                 "Using the table below, find out which button should be pressed. \n" +
+                                 "The same button as before will flash, followed by another. Repeat the button presses in the corresponding order. \n" +
+                                 "The display at the top will show how many sequences have been completed, and how many are still to come. \n" +
+                                 $"The sequence will lengthen every time, making a mistake will cost you {buttonFlashSpeed} seconds and reset the sequence. \n \n" +
                                  $"Flashing button: {buttonColorNames[0]}   {buttonColorNames[1]}  {buttonColorNames[2]}   {buttonColorNames[3]} \n" +
-                                 $"Button to press: {buttonColorNames[1]}   {buttonColorNames[0]}  {buttonColorNames[3]}   {buttonColorNames[2]}";
+                                 $"Button to press: {buttonColorNames[1]}   {buttonColorNames[0]}  {buttonColorNames[3]}   {buttonColorNames[2]} \n \n" +
+                                 $"{drunknessWarning}";
             return logBookPage;
         }
 

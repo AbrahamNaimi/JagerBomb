@@ -17,10 +17,12 @@ namespace Puzzles
         private CaesarCipherEncoder _caesarCipherEncoder;
         private string _encodedCodeword;
         private string _typedWord = "";
+        private Drunkness _drunkness;
 
         // Start is called once before the first execution of Update after the MonoBehaviour is created
         void Start() 
         {
+            _drunkness = (Drunkness)PlayerPrefs.GetInt("Drunkness");
             _caesarCipherEncoder = new CaesarCipherEncoder();
             _encodedCodeword = _caesarCipherEncoder.EncodeCaesarCipher();
             print(_encodedCodeword);
@@ -32,12 +34,13 @@ namespace Puzzles
     
         private void GenerateLogbookPage()
         {
-            logbookController.AddPage(new LogBookPage("Caesar Cipher puzzle", "Caesar Cipher puzzle", "instructions"));
+            
+            logbookController.AddPage(new LogBookPage("Caesar Cipher puzzle", "Caesar Cipher puzzle", _caesarCipherEncoder.GenerateLogbookInstructions()));
         }
 
         void SetButtonText()
         {
-            Random rand = new System.Random();
+            Random rand = new Random();
             IEnumerable<char> distinctCodeWordLetters = _encodedCodeword.Distinct().OrderBy(c => rand.Next());
         
         
@@ -72,6 +75,15 @@ namespace Puzzles
         void SetIsPuzzleSolved()
         {
             IsPuzzleSolved = _encodedCodeword == _typedWord;
+
+            if (_drunkness != Drunkness.Heavy && IsPuzzleSolved)
+            {
+                displayText.color = Color.green;
+            }
+            else 
+            {
+                displayText.color = Color.red;
+            }
         }
     }
 }
