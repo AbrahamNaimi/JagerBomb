@@ -8,13 +8,14 @@ namespace Puzzles.Puzzle_Generation
         private CaesarCipherEncoder _caesarCipherEncoder;
 
         // puzzleSlot 5 contains the timer and should always be active, can be excluded later but is left for now in case random puzzle slot allocation will be implemented
-        private int[] _easyPuzzles = { 0, 1, 5 };
-        private int[] _mediumPuzzles = { 0, 1, 2, 3, 5 };
-        private int[] _hardPuzzles = { 0, 1, 2, 3, 4, 5 };
+        private readonly int[] _easyPuzzles = { 0, 1, 5 };
+        private readonly int[] _mediumPuzzles = { 0, 1, 2, 3, 5 };
+        private readonly int[] _hardPuzzles = { 0, 1, 2, 3, 4, 5 };
 
         public PuzzleGenerator()
         {
-            PlayerPrefs.SetInt("Drunkness", (int)Drunkness.Light);
+            PlayerPrefs.SetInt("Level", 2);
+            PlayerPrefs.SetInt("Drunkness", (int)Drunkness.Medium);
             PlayerPrefs.Save();
         }
 
