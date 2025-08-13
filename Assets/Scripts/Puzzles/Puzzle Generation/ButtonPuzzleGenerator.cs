@@ -100,7 +100,6 @@ namespace Puzzles.Puzzle_Generation
         public List<int> GetSolution()
         {
             int solutionLength = PlayerPrefs.GetInt("Level") == 1 ? 3 : 4;
-            Debug.Log($"solution length: {solutionLength}");
             List<int> solution = new();
             int previous = -1;
 
