@@ -63,7 +63,8 @@ public void ObjectClicked(GameObject hitGameObject)
     // ✅ Spawn CutFlash prefab at wire's position with slight offset
     if (cutFlashPrefab != null)
     {
-        Vector3 spawnPos = hitGameObject.transform.position + hitGameObject.transform.up * 0.1f;
+        Vector3 spawnPos = hitGameObject.transform.position;
+        spawnPos.z -= 0.1f;
         GameObject flashInstance = Instantiate(cutFlashPrefab, spawnPos, Quaternion.identity);
         // ✅ Optional: parent it to the wire so it moves with it
         flashInstance.transform.SetParent(hitGameObject.transform);
