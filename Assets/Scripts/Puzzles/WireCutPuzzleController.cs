@@ -12,7 +12,9 @@ public class WireCutPuzzleController : MonoBehaviour, IPuzzle
 
     public List<GameObject> wires; // Assign in Inspector (5 wires)
     public AudioClip cutSound; // assign in Inspector
-public float cutDuration = 0.2f;
+    public float cutDuration = 0.2f;
+    public GameObject cutFlashPrefab; // assign in Inspector
+
     private GameObject _correctWire;
     private bool _isLocked = false;
 
@@ -54,20 +56,18 @@ public void ObjectClicked(GameObject hitGameObject)
 
     _isLocked = true;
 
-    // Play cut sound if available
+    // Play cut sound
     if (cutSound != null)
         AudioSource.PlayClipAtPoint(cutSound, hitGameObject.transform.position);
-
-    // Play particle effect if child "CutEffect" exists
-    var cutEffect = hitGameObject.transform.Find("CutEffect");
-    if (cutEffect != null)
+        Debug.Log(cutFlashPrefab);
+    // ✅ Spawn CutFlash prefab at wire's position with slight offset
+    if (cutFlashPrefab != null)
     {
-        var ps = cutEffect.GetComponent<ParticleSystem>();
-        if (ps != null) ps.Play();
+        Vector3 spawnPos = hitGameObject.transform.position + hitGameObject.transform.up * 0.1f;
+        GameObject flashInstance = Instantiate(cutFlashPrefab, spawnPos, Quaternion.identity);
+        // ✅ Optional: parent it to the wire so it moves with it
+        flashInstance.transform.SetParent(hitGameObject.transform);
     }
-
-    // Start cut animation
-    StartCoroutine(CutWireAnimation(hitGameObject));
 
     // Check result
     if (hitGameObject == _correctWire)
@@ -81,30 +81,6 @@ public void ObjectClicked(GameObject hitGameObject)
         StartCoroutine(FlashFail(hitGameObject));
         Debug.Log("Wrong wire cut!");
     }
-}
-
-
-    private IEnumerator CutWireAnimation(GameObject wire)
-{
-    Vector3 originalScale = wire.transform.localScale;
-    Vector3 targetScale = new Vector3(originalScale.x, originalScale.y, originalScale.z * 0.5f);
-
-    Vector3 originalPos = wire.transform.localPosition;
-    Vector3 targetPos = originalPos - new Vector3(0, 0, originalScale.z * 0.25f);
-
-    float elapsed = 0f;
-    float duration = 0.2f;
-
-    while (elapsed < duration)
-    {
-        wire.transform.localScale = Vector3.Lerp(originalScale, targetScale, elapsed / duration);
-        wire.transform.localPosition = Vector3.Lerp(originalPos, targetPos, elapsed / duration);
-        elapsed += Time.deltaTime;
-        yield return null;
-    }
-
-    wire.transform.localScale = targetScale;
-    wire.transform.localPosition = targetPos;
 }
 
 
@@ -136,9 +112,6 @@ public void ObjectClicked(GameObject hitGameObject)
     {
         string instructions = "Knip de juiste draad door om het systeem te ontmantelen.\n" +
                               "Hint: Slechts één draad is correct.";
-
-        // Optional: reveal solution for testing
-        // instructions += $"\n\nOplossing: {wires.IndexOf(_correctWire) + 1}";
 
         logbookController.AddPage(
             new LogBookPage("Wire Cut Puzzle", "Bomb Defusal", instructions)
