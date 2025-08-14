@@ -8,6 +8,7 @@ public class CutFlashEffect : MonoBehaviour
     private Color _startColor;
     private Color _endColor;
     private float _elapsed;
+    public bool shouldFade = true;
 
 void Start()
 {
@@ -29,19 +30,20 @@ void Start()
 }
 
 
-    void Update()
+ void Update()
+{
+    if (_lineRenderer == null || !shouldFade) return;
+
+    _elapsed += Time.deltaTime;
+    float alpha = Mathf.Lerp(1f, 0f, _elapsed / duration);
+
+    _lineRenderer.startColor = new Color(_startColor.r, _startColor.g, _startColor.b, alpha);
+    _lineRenderer.endColor = new Color(_endColor.r, _endColor.g, _endColor.b, alpha);
+
+    if (_elapsed >= duration)
     {
-        if (_lineRenderer == null) return;
-
-        _elapsed += Time.deltaTime;
-        float alpha = Mathf.Lerp(1f, 0f, _elapsed / duration);
-
-        _lineRenderer.startColor = new Color(_startColor.r, _startColor.g, _startColor.b, alpha);
-        _lineRenderer.endColor = new Color(_endColor.r, _endColor.g, _endColor.b, alpha);
-
-        if (_elapsed >= duration)
-        {
-            Destroy(gameObject);
-        }
+        Destroy(gameObject);
     }
+}
+
 }

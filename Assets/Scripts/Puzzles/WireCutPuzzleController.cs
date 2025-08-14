@@ -64,10 +64,17 @@ public void ObjectClicked(GameObject hitGameObject)
     if (cutFlashPrefab != null)
     {
         Vector3 spawnPos = hitGameObject.transform.position;
-        spawnPos.z -= 0.1f;
+        spawnPos.z -= 0.2f;
+        spawnPos.y -= 0.1f;
+        Debug.Log(spawnPos);
         GameObject flashInstance = Instantiate(cutFlashPrefab, spawnPos, Quaternion.identity);
         // ✅ Optional: parent it to the wire so it moves with it
         flashInstance.transform.SetParent(hitGameObject.transform);
+        CutFlashEffect effect = flashInstance.GetComponent<CutFlashEffect>();
+if (effect != null)
+{
+    effect.shouldFade = hitGameObject != _correctWire;
+}
     }
 
     // Check result
