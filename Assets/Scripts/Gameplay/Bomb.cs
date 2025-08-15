@@ -26,6 +26,7 @@ public class Bomb : MonoBehaviour
 
         KnockBack();
         Destroy(gameObject);
+        GameSceneManager.Instance.Explode();
     }
 
     void KnockBack()
