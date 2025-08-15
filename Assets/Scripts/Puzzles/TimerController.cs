@@ -4,19 +4,15 @@ namespace Puzzles
 {
     public class TimerController : MonoBehaviour
     {
-        public float startTimeInSeconds = 120.00f;
         public TextMesh timerText;
+        public bool isStopped = true;
 
         private float _currentTimerTime;
-
-        void Start()
-        {
-            _currentTimerTime = startTimeInSeconds;
-        }
 
         // Update is called once per frame
         void Update()
         {
+            if (isStopped) return;
             _currentTimerTime -= Time.deltaTime;
             if (_currentTimerTime < 0) _currentTimerTime = 0;
 
@@ -25,6 +21,27 @@ namespace Puzzles
             int centiseconds = Mathf.FloorToInt((_currentTimerTime * 100) % 100);
 
             timerText.text = $"{minutes:D2}:{seconds:D2}:{centiseconds:D2}";
+
+            if (_currentTimerTime == 0)
+            {
+                
+            }
+        }
+
+        public void StartTimer(float startTimeInSeconds)
+        {
+            _currentTimerTime = startTimeInSeconds;
+            isStopped = false;
+        }
+
+        public void DeductTime(float time)
+        {
+            _currentTimerTime -= time;
+        }
+
+        public void PauseUnpauseTimer()
+        {
+            isStopped = !isStopped;
         }
     }
 }
