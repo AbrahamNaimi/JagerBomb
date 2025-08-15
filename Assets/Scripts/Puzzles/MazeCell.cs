@@ -2,32 +2,44 @@ using UnityEngine;
 
 public class MazeCell
 {
-    public readonly int x;
-    public readonly int y;
-    public GameObject visualCube;
+    public readonly int X;
+    public readonly int Y;
+    public GameObject VisualCube;
 
-    public bool wallTop = true;
-    public bool wallBottom = true;
-    public bool wallLeft = true;
-    public bool wallRight = true;
+    public bool WallTop = true;
+    public bool WallBottom = true;
+    public bool WallLeft = true;
+    public bool WallRight = true;
 
-    public bool visited = false;
+    public bool Visited = false;
 
     public MazeCell(int x, int y, GameObject cube)
     {
-        this.x = x;
-        this.y = y;
-        visualCube = cube;
+        X = x;
+        Y = y;
+        VisualCube = cube;
     }
 
     public void RemoveWall(MazeCell neighbor)
     {
-        int dx = neighbor.x - x;
-        int dy = neighbor.y - y;
+        int dx = neighbor.X - X;
+        int dy = neighbor.Y - Y;
 
-        if (dx == 1) { wallRight = false; neighbor.wallLeft = false; }
-        else if (dx == -1) { wallLeft = false; neighbor.wallRight = false; }
-        else if (dy == 1) { wallTop = false; neighbor.wallBottom = false; }
-        else if (dy == -1) { wallBottom = false; neighbor.wallTop = false; }
+        switch (dx)
+        {
+            case 1:
+                WallRight = false; neighbor.WallLeft = false;
+                break;
+            case -1:
+                WallLeft = false; neighbor.WallRight = false;
+                break;
+            default:
+            {
+                if (dy == 1) { WallTop = false; neighbor.WallBottom = false; }
+                else if (dy == -1) { WallBottom = false; neighbor.WallTop = false; }
+
+                break;
+            }
+        }
     }
 }
