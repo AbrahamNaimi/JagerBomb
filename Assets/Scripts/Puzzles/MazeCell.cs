@@ -41,5 +41,9 @@ public class MazeCell
                 break;
             }
         }
+        if (dx == 1) { WallRight = false; neighbor.WallLeft = false; }
+        else if (dx == -1) { WallLeft = false; neighbor.WallRight = false; }
+        else if (dy == 1) { WallTop = false; neighbor.WallBottom = false; }
+        else if (dy == -1) { WallBottom = false; neighbor.WallTop = false; }
     }
 }
