@@ -10,99 +10,78 @@ public class WireCutPuzzleController : MonoBehaviour, IPuzzle
     public bool IsPuzzleSolved { get; private set; }
     public LogbookController logbookController;
 
-    public List<GameObject> wires; // Assign in Inspector (5 wires)
-    public AudioClip cutSound; // assign in Inspector
+    public List<GameObject> wires;
+    public AudioClip cutSound;
     public float cutDuration = 0.2f;
-    public GameObject cutFlashPrefab; // assign in Inspector
+    public GameObject cutFlashPrefab;
 
+    private List<Color> _wireColors = new() { Color.white, Color.blue, Color.green, Color.yellow, Color.black };
     private GameObject _correctWire;
-    private bool _isLocked = false;
+    private bool _isLocked;
 
     void Start()
     {
-        if (wires == null || wires.Count == 0)
-        {
-            wires = GetComponentsInChildren<Transform>()
-                .Where(t => t != transform && t.name.ToLower().Contains("wire"))
-                .Select(t => t.gameObject)
-                .ToList();
-        }
-
-        if (wires.Count == 0)
-        {
-            Debug.LogError("No wires found for WireCutPuzzleController.");
-            return;
-        }
-
-        // Pick random correct wire
         _correctWire = wires[Random.Range(0, wires.Count)];
 
-        // Optional: shuffle colors
-        Color[] colors = { Color.red, Color.blue, Color.green, Color.yellow, Color.black };
-        for (int i = 0; i < wires.Count && i < colors.Length; i++)
+        foreach (GameObject wire in wires)
         {
-            Renderer rend = wires[i].GetComponent<Renderer>();
-            if (rend != null)
-                rend.material.color = colors[i];
+            Renderer wireRenderer = wire.GetComponent<Renderer>();
+            Color wireColor = _wireColors[Random.Range(0, _wireColors.Count)];
+            wireRenderer.material.color = wireColor;
+            _wireColors.Remove(wireColor);
         }
 
         GenerateLogbookPage();
     }
 
-public void ObjectClicked(GameObject hitGameObject)
-{
-    if (_isLocked || IsPuzzleSolved) return;
-    if (!wires.Contains(hitGameObject)) return;
-
-    _isLocked = true;
-
-    // Play cut sound
-    if (cutSound != null)
-        AudioSource.PlayClipAtPoint(cutSound, hitGameObject.transform.position);
-        Debug.Log(cutFlashPrefab);
-    // ✅ Spawn CutFlash prefab at wire's position with slight offset
-    if (cutFlashPrefab != null)
+    public void ObjectClicked(GameObject hitGameObject)
     {
-        Vector3 spawnPos = hitGameObject.transform.position;
-        spawnPos.z -= 0.2f;
-        spawnPos.y -= 0.1f;
-        Debug.Log(spawnPos);
-        GameObject flashInstance = Instantiate(cutFlashPrefab, spawnPos, Quaternion.identity);
-        // ✅ Optional: parent it to the wire so it moves with it
-        flashInstance.transform.SetParent(hitGameObject.transform);
-        CutFlashEffect effect = flashInstance.GetComponent<CutFlashEffect>();
-if (effect != null)
-{
-    effect.shouldFade = hitGameObject != _correctWire;
-}
-    }
+        if (_isLocked || IsPuzzleSolved) return;
+        if (!wires.Contains(hitGameObject)) return;
 
-    // Check result
-    if (hitGameObject == _correctWire)
-    {
-        IsPuzzleSolved = true;
-        StartCoroutine(FlashVictory());
-        Debug.Log("Correct wire cut!");
+        _isLocked = true;
+
+        if (cutSound != null)
+            AudioSource.PlayClipAtPoint(cutSound, hitGameObject.transform.position);
+
+        if (cutFlashPrefab != null)
+        {
+            Vector3 spawnPos = hitGameObject.transform.position;
+            spawnPos.z -= 0.2f;
+            spawnPos.y -= 0.1f;
+
+            GameObject flashInstance = Instantiate(cutFlashPrefab, spawnPos, Quaternion.identity);
+
+            flashInstance.transform.SetParent(hitGameObject.transform);
+            CutFlashEffect effect = flashInstance.GetComponent<CutFlashEffect>();
+            if (effect != null)
+            {
+                effect.shouldFade = hitGameObject != _correctWire;
+            }
+        }
+
+        if (hitGameObject == _correctWire)
+        {
+            IsPuzzleSolved = true;
+            StartCoroutine(FlashVictory());
+        }
+        else
+        {
+            StartCoroutine(FlashFail(hitGameObject));
+        }
     }
-    else
-    {
-        StartCoroutine(FlashFail(hitGameObject));
-        Debug.Log("Wrong wire cut!");
-    }
-}
 
 
     private IEnumerator FlashFail(GameObject wire, float duration = 0.5f)
     {
         Renderer rend = wire.GetComponent<Renderer>();
-        if (rend != null)
-        {
-            Color originalColor = rend.material.color;
-            rend.material.color = Color.red;
-            yield return new WaitForSeconds(duration);
-            rend.material.color = originalColor;
-        }
-        _isLocked = false; // allow retry if you want
+
+        Color originalColor = rend.material.color;
+        rend.material.color = Color.red;
+        yield return new WaitForSeconds(duration);
+        rend.material.color = originalColor;
+
+        _isLocked = false;
     }
 
     private IEnumerator FlashVictory()
@@ -111,8 +90,7 @@ if (effect != null)
         foreach (var wire in wires)
         {
             Renderer rend = wire.GetComponent<Renderer>();
-            if (rend != null)
-                rend.material.color = Color.green;
+            rend.material.color = Color.green;
         }
     }
 
