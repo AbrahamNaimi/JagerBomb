@@ -77,7 +77,7 @@ public class MazePuzzleController : MonoBehaviour, IPuzzle
     {
         Stack<MazeCell> stack = new();
         MazeCell start = _grid[startX, startY];
-        start.visited = true;
+        start.Visited = true;
         stack.Push(start);
 
         Dictionary<MazeCell, MazeCell> cameFrom = new();
@@ -91,7 +91,7 @@ public class MazePuzzleController : MonoBehaviour, IPuzzle
             {
                 MazeCell next = neighbors[Random.Range(0, neighbors.Count)];
                 current.RemoveWall(next);
-                next.visited = true;
+                next.Visited = true;
                 cameFrom[next] = current;
                 stack.Push(next);
             }
@@ -105,26 +105,26 @@ public class MazePuzzleController : MonoBehaviour, IPuzzle
         MazeCell goal = _grid[_goalPos.x, _goalPos.y];
         while (goal != start)
         {
-            _solutionPath.Add(new Vector2Int(goal.x, goal.y));
+            _solutionPath.Add(new Vector2Int(goal.X, goal.Y));
             goal = cameFrom[goal];
         }
-        _solutionPath.Add(new Vector2Int(start.x, start.y));
+        _solutionPath.Add(new Vector2Int(start.X, start.Y));
         _solutionPath.Reverse();
 
         foreach (var cell in _grid)
-            cell.visited = false;
+            cell.Visited = false;
     }
 
     private List<MazeCell> GetUnvisitedNeighbors(MazeCell cell)
     {
         List<MazeCell> neighbors = new();
-        int x = cell.x;
-        int y = cell.y;
+        int x = cell.X;
+        int y = cell.Y;
 
-        if (x > 0 && !_grid[x - 1, y].visited) neighbors.Add(_grid[x - 1, y]);
-        if (x < GRID_WIDTH - 1 && !_grid[x + 1, y].visited) neighbors.Add(_grid[x + 1, y]);
-        if (y > 0 && !_grid[x, y - 1].visited) neighbors.Add(_grid[x, y - 1]);
-        if (y < GRID_HEIGHT - 1 && !_grid[x, y + 1].visited) neighbors.Add(_grid[x, y + 1]);
+        if (x > 0 && !_grid[x - 1, y].Visited) neighbors.Add(_grid[x - 1, y]);
+        if (x < GRID_WIDTH - 1 && !_grid[x + 1, y].Visited) neighbors.Add(_grid[x + 1, y]);
+        if (y > 0 && !_grid[x, y - 1].Visited) neighbors.Add(_grid[x, y - 1]);
+        if (y < GRID_HEIGHT - 1 && !_grid[x, y + 1].Visited) neighbors.Add(_grid[x, y + 1]);
 
         return neighbors;
     }
@@ -157,10 +157,10 @@ public class MazePuzzleController : MonoBehaviour, IPuzzle
 
     private bool HasWall(MazeCell cell, Vector2Int dir)
     {
-        if (dir == Vector2Int.up) return cell.wallTop;
-        if (dir == Vector2Int.down) return cell.wallBottom;
-        if (dir == Vector2Int.left) return cell.wallLeft;
-        if (dir == Vector2Int.right) return cell.wallRight;
+        if (dir == Vector2Int.up) return cell.WallTop;
+        if (dir == Vector2Int.down) return cell.WallBottom;
+        if (dir == Vector2Int.left) return cell.WallLeft;
+        if (dir == Vector2Int.right) return cell.WallRight;
         return true;
     }
 
@@ -173,9 +173,9 @@ public class MazePuzzleController : MonoBehaviour, IPuzzle
             for (int x = 0; x < GRID_WIDTH; x++)
             {
                 var cell = _grid[x, y];
-                if (cell?.visualCube == null) continue;
+                if (cell?.VisualCube == null) continue;
 
-                var rend = cell.visualCube.GetComponent<Renderer>();
+                var rend = cell.VisualCube.GetComponent<Renderer>();
                 if (rend != null)
                 {
                     renderers.Add(rend);
@@ -197,9 +197,9 @@ public class MazePuzzleController : MonoBehaviour, IPuzzle
             for (int x = 0; x < GRID_WIDTH; x++)
             {
                 var cell = _grid[x, y];
-                if (cell?.visualCube == null) continue;
+                if (cell?.VisualCube == null) continue;
 
-                var rend = cell.visualCube.GetComponent<Renderer>();
+                var rend = cell.VisualCube.GetComponent<Renderer>();
                 if (rend != null)
                 {
                     rend.material.color = Color.green;
@@ -215,9 +215,9 @@ public class MazePuzzleController : MonoBehaviour, IPuzzle
             for (int x = 0; x < GRID_WIDTH; x++)
             {
                 var cell = _grid[x, y];
-                if (cell == null || cell.visualCube == null) continue;
+                if (cell == null || cell.VisualCube == null) continue;
 
-                var rend = cell.visualCube.GetComponent<Renderer>();
+                var rend = cell.VisualCube.GetComponent<Renderer>();
                 if (rend == null) continue;
 
                 if (_playerPos == new Vector2Int(x, y)) rend.material.color = Color.red;
