@@ -19,10 +19,9 @@ void Start()
         return;
     }
 
-    // ✅ Voeg deze regels toe
     _lineRenderer.positionCount = 2;
     _lineRenderer.SetPosition(0, Vector3.zero);
-    _lineRenderer.SetPosition(1, Vector3.up * 0.2f); // verticale lijn van 20 cm
+    _lineRenderer.SetPosition(1, Vector3.up * 0.2f); 
 
     _startColor = _lineRenderer.startColor;
     _endColor = _lineRenderer.endColor;
