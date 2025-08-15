@@ -161,6 +161,9 @@ namespace Puzzles
                 case MazePuzzleController puzzleController:
                     puzzleController.ObjectClicked(hitCollider.gameObject);
                     break;
+                case WireCutPuzzleController puzzleController:
+                    puzzleController.ObjectClicked(hitCollider.gameObject);
+                    break;
             }
         }
     }
