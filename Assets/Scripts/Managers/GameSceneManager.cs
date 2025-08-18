@@ -1,4 +1,5 @@
 using System.Collections;
+using Puzzles.Puzzle_Generation;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -35,7 +36,9 @@ public class GameSceneManager : MonoBehaviour
     // Call this method from main menu to begin a new game
     public void StartNewGame()
     {
-        currentLevel = 1;
+        PlayerPrefs.SetInt("Level", 1);
+        PlayerPrefs.SetInt("Drunkness", (int) Drunkness.Light);
+        PlayerPrefs.Save();
         LoadBarScene();
     }
 

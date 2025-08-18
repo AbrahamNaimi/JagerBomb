@@ -20,6 +20,7 @@ namespace Puzzles
         public bool IsBombSolved { get; private set; } = false;
         public float cameraDistanceToPuzzle = 0.75f;
         public TimerController timerController;
+        public GameObject puzzleEndScreen;
 
         private Vector3 _screenPoint;
         private Vector3 _offset;
@@ -39,12 +40,12 @@ namespace Puzzles
             PuzzleGenerator.SetPuzzles(puzzleSlots);
             GetPuzzles();
             GetPuzzleScripts();
-            SetIsSolvedLight(false);
+            SetIsSolved(false);
         
             _cameraStartPosition = mainCamera.transform.position;
             timerCamera.enabled = false;
             
-            timerController.StartTimer(120.0f);
+            timerController.StartTimer(1.0f);
         }
 
         void Update()
@@ -52,8 +53,8 @@ namespace Puzzles
             if (IsBombDefused() != IsBombSolved)
             {
                 IsBombSolved = IsBombDefused();
-                SetIsSolvedLight(IsBombSolved);
-                timerController.PauseTimer();
+                SetIsSolved(IsBombSolved);
+                
             }
         }
 
@@ -78,6 +79,7 @@ namespace Puzzles
             mainCamera.enabled = false;
             inventoryManager.inventory.SetActive(false);
             explosion.SetActive(true);
+            puzzleEndScreen.SetActive(true);
         }
 
         private void GetPuzzleScripts()
@@ -107,11 +109,13 @@ namespace Puzzles
         }
 
         // ReSharper disable Unity.PerformanceAnalysis
-        private void SetIsSolvedLight(bool isSolved)
+        private void SetIsSolved(bool isSolved)
         {
             if (isSolved)
             {
+                timerController.PauseTimer();
                 isSolvedLight.GetComponent<Renderer>().material.color = Color.green;
+                puzzleEndScreen.SetActive(true);
             }
             else
             {
@@ -127,7 +131,7 @@ namespace Puzzles
 
         private void MouseRaycast(InputAction.CallbackContext context)
         {
-            if (inventoryManager.LogbookOpen) return;
+            if (inventoryManager.LogbookOpen || IsBombSolved) return;
             RaycastHit hit;
             Ray ray = mainCamera.ScreenPointToRay(Mouse.current.position.ReadValue());
 
