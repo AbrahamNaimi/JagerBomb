@@ -1,12 +1,12 @@
 using System.Collections;
 using UnityEngine;
-using TMPro; // <-- TextMesh Pro
-using UnityEngine.InputSystem; // <-- new Input System
+using TMPro; 
+using UnityEngine.InputSystem; 
 
 public class QTESys : MonoBehaviour
 {
-    public TextMeshProUGUI DisplayBox; // changed from GameObject
-    public TextMeshProUGUI PassBox;    // changed from GameObject
+    public TextMeshProUGUI DisplayBox; 
+    public TextMeshProUGUI PassBox;   
 
     public int QTEGen;
     public int WaitingForKey;
@@ -40,24 +40,24 @@ public class QTESys : MonoBehaviour
             }
         }
 
-        // --- Check key presses using new Input System ---
+        
         if (WaitingForKey == 1)
         {
             if (Keyboard.current.anyKey.wasPressedThisFrame)
             {
                 switch (QTEGen)
                 {
-                    case 0: // Expecting E
+                    case 0: 
                         CorrectKey = Keyboard.current.qKey.wasPressedThisFrame ? 1 : 2;
                         StartCoroutine(KeyPressing());
                         break;
 
-                    case 1: // Expecting R
+                    case 1: 
                         CorrectKey = Keyboard.current.rKey.wasPressedThisFrame ? 1 : 2;
                         StartCoroutine(KeyPressing());
                         break;
 
-                    case 2: // Expecting T
+                    case 2: 
                         CorrectKey = Keyboard.current.tKey.wasPressedThisFrame ? 1 : 2;
                         StartCoroutine(KeyPressing());
                         break;
