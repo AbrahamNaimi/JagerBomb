@@ -5,6 +5,7 @@ using StarterAssets;
 using Cinemachine;
 using System.Collections;
 using Puzzles.Puzzle_Generation;
+using UnityEngine.Serialization;
 
 [RequireComponent(typeof(Collider))]
 public class SitSpot : MonoBehaviour
@@ -21,6 +22,8 @@ public class SitSpot : MonoBehaviour
     public StarterAssetsInputs starterInputs;
     public Drinkable drinkable;
     public GameSceneManager sceneManager;
+    public GameObject qteObject;
+    public float qteInterval;
 
     [Header("UI Prompt")]
     public GameObject promptRoot;
@@ -45,16 +48,20 @@ public class SitSpot : MonoBehaviour
     public bool IsSitting => isSitting;
     
     private Drunkness _currentDrunkness;
-    private int _currentLevel;
+    private int _numberOfDrinkingImpulses;
+    private float _timeSinceLastQTE = 7.0f;
+    private GameObject _QTE;
+    private GameObject _nextQTE;
 
     void Awake()
     {
         _currentDrunkness = (Drunkness) PlayerPrefs.GetInt("Drunkness");
-        _currentLevel = PlayerPrefs.GetInt("Level");
+        _numberOfDrinkingImpulses = PlayerPrefs.GetInt("Level") * 3;
         var col = GetComponent<Collider>();
         if (col) col.isTrigger = true;
         
-        print(_currentDrunkness);
+        _QTE = Instantiate(qteObject, Vector3.zero, Quaternion.identity);
+        _QTE.GetComponentInChildren<QTESys>().sitSpot =  this;
 
         // Autofind common refs
         if (!playerCapsule)
@@ -70,13 +77,22 @@ public class SitSpot : MonoBehaviour
 
         TogglePrompt(false, false);
 
-        if (fadeCanvas) fadeCanvas.alpha = 0f; // start fully visible
-
-        StartCoroutine(SitAndDrink());
+        if (fadeCanvas) fadeCanvas.alpha = 0f; 
     }
 
     void Update()
     {
+        _timeSinceLastQTE += Time.deltaTime;
+        
+        if (!_QTE.activeInHierarchy && _timeSinceLastQTE > qteInterval)
+        {
+            _QTE.SetActive(true);
+            _nextQTE = Instantiate(qteObject, Vector3.zero, Quaternion.identity);
+            _nextQTE.GetComponentInChildren<QTESys>().sitSpot =  this;
+            _QTE =  _nextQTE;
+            _timeSinceLastQTE = 0f;
+        }
+        
         if (playerInZone && Keyboard.current != null && interactKey != Key.None &&
             Keyboard.current[interactKey].wasPressedThisFrame)
         {
