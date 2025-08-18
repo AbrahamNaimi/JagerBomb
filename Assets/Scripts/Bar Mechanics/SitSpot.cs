@@ -135,6 +135,7 @@ public class SitSpot : MonoBehaviour
         }
         else
         {
+            yield return Fade(2f);
             sceneManager.GoToNextLevel();
         }
     }
