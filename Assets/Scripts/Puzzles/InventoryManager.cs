@@ -7,7 +7,7 @@ namespace Puzzles
         public GameObject inventory;
         
         private CanvasGroup _inventoryCanvas;
-        private bool _logbookOpen = false;
+        public bool LogbookOpen {get; private set;}
         private InputActions _inputActions;
     
         void Start()
@@ -33,8 +33,8 @@ namespace Puzzles
 
         private void ToggleLogbook()
         {
-            _logbookOpen = !_logbookOpen;
-            _inventoryCanvas.alpha = _logbookOpen ? 1 : 0;
+            LogbookOpen = !LogbookOpen;
+            _inventoryCanvas.alpha = LogbookOpen ? 1 : 0;
         }
     }
 }

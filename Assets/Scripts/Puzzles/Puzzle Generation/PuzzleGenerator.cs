@@ -9,8 +9,8 @@ namespace Puzzles.Puzzle_Generation
 
         // puzzleSlot 5 contains the timer and should always be active, can be excluded later but is left for now in case random puzzle slot allocation will be implemented
         private readonly int[] _easyPuzzles = { 0, 1, 5 };
-        private readonly int[] _mediumPuzzles = { 0, 1, 2, 3, 5 };
-        private readonly int[] _hardPuzzles = { 0, 1, 2, 3, 4, 5 };
+        private readonly int[] _mediumPuzzles = { 0, 1, 3, 5 };
+        private readonly int[] _hardPuzzles = { 0, 1, 3, 4, 5 };
 
         public PuzzleGenerator()
         {
@@ -22,15 +22,15 @@ namespace Puzzles.Puzzle_Generation
         public void SetPuzzles(GameObject[] puzzleSlots)
         {
             int[] toBeActivatedPuzzles = { };
-            switch ((Drunkness)PlayerPrefs.GetInt("Drunkness"))
+            switch (PlayerPrefs.GetInt("Level"))
             {
-                case Drunkness.Light:
+                case 1:
                     toBeActivatedPuzzles = _easyPuzzles;
                     break;
-                case Drunkness.Medium:
+                case 2:
                     toBeActivatedPuzzles = _mediumPuzzles;
                     break;
-                case Drunkness.Heavy:
+                case 3:
                     toBeActivatedPuzzles = _hardPuzzles;
                     break;
             }

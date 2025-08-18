@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using JetBrains.Annotations;
+using Puzzles.Controllers;
 using Puzzles.Puzzle_Generation;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -10,13 +11,16 @@ namespace Puzzles
     [RequireComponent(typeof(BoxCollider))]
     public class BombManager : MonoBehaviour
     {
-        public Camera camera;
+        public Camera mainCamera;
         public Camera timerCamera;
+        public GameObject explosion;
         public GameObject[] puzzleSlots;
         public GameObject isSolvedLight;
+        public InventoryManager inventoryManager;
         public bool IsBombSolved { get; private set; } = false;
-        public float cameraDistanceToPuzzle = 3.0f;
+        public float cameraDistanceToPuzzle = 0.75f;
         public TimerController timerController;
+        public GameObject puzzleEndScreen;
 
         private Vector3 _screenPoint;
         private Vector3 _offset;
@@ -36,12 +40,12 @@ namespace Puzzles
             PuzzleGenerator.SetPuzzles(puzzleSlots);
             GetPuzzles();
             GetPuzzleScripts();
-            SetIsSolvedLight(false);
+            SetIsSolved(false);
         
-            _cameraStartPosition = camera.transform.position;
+            _cameraStartPosition = mainCamera.transform.position;
             timerCamera.enabled = false;
             
-            timerController.StartTimer(120.0f);
+            timerController.StartTimer(1.0f);
         }
 
         void Update()
@@ -49,7 +53,8 @@ namespace Puzzles
             if (IsBombDefused() != IsBombSolved)
             {
                 IsBombSolved = IsBombDefused();
-                SetIsSolvedLight(IsBombSolved);
+                SetIsSolved(IsBombSolved);
+                
             }
         }
 
@@ -68,7 +73,16 @@ namespace Puzzles
             _inputActions.Disable();
         }
 
-        void GetPuzzleScripts()
+        public void ExplodeBomb()
+        {
+            timerCamera.enabled = false;
+            mainCamera.enabled = false;
+            inventoryManager.inventory.SetActive(false);
+            explosion.SetActive(true);
+            puzzleEndScreen.SetActive(true);
+        }
+
+        private void GetPuzzleScripts()
         {
             foreach (var puzzleSlot in puzzleSlots)
             {
@@ -79,7 +93,7 @@ namespace Puzzles
             }
         }
 
-        bool IsBombDefused()
+        private bool IsBombDefused()
         {
             bool puzzlesSolved = true;
             foreach (var puzzleController in _puzzleControllers)
@@ -95,11 +109,13 @@ namespace Puzzles
         }
 
         // ReSharper disable Unity.PerformanceAnalysis
-        void SetIsSolvedLight(bool isSolved)
+        private void SetIsSolved(bool isSolved)
         {
             if (isSolved)
             {
+                timerController.PauseTimer();
                 isSolvedLight.GetComponent<Renderer>().material.color = Color.green;
+                puzzleEndScreen.SetActive(true);
             }
             else
             {
@@ -107,16 +123,17 @@ namespace Puzzles
             }
         }
 
-        void GetPuzzles()
+        private void GetPuzzles()
         {
             puzzleSlots = GameObject.FindGameObjectsWithTag("Puzzle");
             Array.Sort(puzzleSlots, (a, b) => String.Compare(a.name, b.name, StringComparison.Ordinal));
         }
 
-        void MouseRaycast(InputAction.CallbackContext context)
+        private void MouseRaycast(InputAction.CallbackContext context)
         {
+            if (inventoryManager.LogbookOpen || IsBombSolved) return;
             RaycastHit hit;
-            Ray ray = camera.ScreenPointToRay(Mouse.current.position.ReadValue());
+            Ray ray = mainCamera.ScreenPointToRay(Mouse.current.position.ReadValue());
 
             if (Physics.Raycast(ray, out hit))
             {
@@ -124,7 +141,7 @@ namespace Puzzles
             }
         }
 
-        void HandlePuzzleClick(Collider hitCollider)
+        private void HandlePuzzleClick(Collider hitCollider)
         {
             IPuzzle clickedPuzzle = hitCollider.gameObject.GetComponentInParent<IPuzzle>();
 
@@ -137,19 +154,19 @@ namespace Puzzles
             if (clickedPuzzle == null)
             {
                 _currentPuzzle = null;
-                camera.transform.position = _cameraStartPosition;
+                mainCamera.transform.position = _cameraStartPosition;
                 timerCamera.enabled = false;
                 return;
             }
 
             _currentPuzzle = clickedPuzzle;
             Vector3 puzzlePosition = (clickedPuzzle as MonoBehaviour)!.gameObject.transform.position;
-            camera.transform.position =
-                new Vector3(puzzlePosition.x, puzzlePosition.y, puzzlePosition.z - cameraDistanceToPuzzle);
+            mainCamera.transform.position =
+                new Vector3(puzzlePosition.x, puzzlePosition.y, puzzlePosition.z + cameraDistanceToPuzzle);
             timerCamera.enabled = true;
         }
 
-        void HandlePuzzleItemClick(Collider hitCollider)
+        private void HandlePuzzleItemClick(Collider hitCollider)
         {
             IPuzzle puzzleScript = hitCollider.transform.parent.GetComponent<IPuzzle>();
             switch (puzzleScript)
