@@ -20,7 +20,6 @@ namespace Puzzles.Logbook
     
     public class LogbookController : MonoBehaviour
     {
-        
         public Sprite transparent;
         public Sprite notebookPage;
         public Sprite notebookPageFlipped;

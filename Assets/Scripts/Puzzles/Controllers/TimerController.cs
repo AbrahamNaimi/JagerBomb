@@ -1,11 +1,12 @@
 using UnityEngine;
 
-namespace Puzzles
+namespace Puzzles.Controllers
 {
     public class TimerController : MonoBehaviour
     {
         public TextMesh timerText;
         public bool isStopped = true;
+        public BombManager _BombManager;
 
         private float _currentTimerTime;
 
@@ -24,7 +25,7 @@ namespace Puzzles
 
             if (_currentTimerTime == 0)
             {
-                
+                _BombManager.ExplodeBomb();
             }
         }
 
@@ -39,9 +40,9 @@ namespace Puzzles
             _currentTimerTime -= time;
         }
 
-        public void PauseUnpauseTimer()
+        public void PauseTimer()
         {
-            isStopped = !isStopped;
+            isStopped = true;
         }
     }
 }
