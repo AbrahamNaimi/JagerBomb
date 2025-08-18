@@ -5,7 +5,7 @@ using Puzzles.Puzzle_Generation;
 using UnityEngine;
 using Random = System.Random;
 
-namespace Puzzles
+namespace Puzzles.Controllers
 {
     public class CaesarCipherPuzzleController : MonoBehaviour, IPuzzle
     {
@@ -52,6 +52,7 @@ namespace Puzzles
 
         public void ObjectClicked(GameObject hitGameObject)
         {
+            if (IsPuzzleSolved && _drunkness != Drunkness.Heavy) return;
             string buttonText = hitGameObject.GetComponentInChildren<TextMesh>().text;
             if (buttonText == "←")
             {

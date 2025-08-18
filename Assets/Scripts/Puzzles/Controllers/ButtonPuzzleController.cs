@@ -5,7 +5,7 @@ using Puzzles.Logbook;
 using Puzzles.Puzzle_Generation;
 using UnityEngine;
 
-namespace Puzzles
+namespace Puzzles.Controllers
 {
     public class ButtonPuzzleController : MonoBehaviour, IPuzzle
     {
@@ -55,6 +55,7 @@ namespace Puzzles
 
         public void ObjectClicked(GameObject hitGameObject)
         {
+            if (IsPuzzleSolved) return;
             string objectName = hitGameObject.name;
 
             if (objectName == "Reset Button")
