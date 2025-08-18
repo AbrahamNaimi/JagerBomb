@@ -117,11 +117,11 @@ public class SitSpot : MonoBehaviour
 
     public IEnumerator SitAndDrink()
     {
-        yield return Fade(1f); // fade to black
+        yield return Fade(1f);
 
         Sit();
 
-        yield return Fade(0f); // fade back in
+        yield return Fade(0f);
         
         drinkable.Drink(vcam.transform);
 
