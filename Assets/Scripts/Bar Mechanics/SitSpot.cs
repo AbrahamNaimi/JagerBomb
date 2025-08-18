@@ -4,6 +4,7 @@ using UnityEngine.InputSystem;
 using StarterAssets;
 using Cinemachine;
 using System.Collections;
+using Puzzles.Puzzle_Generation;
 
 [RequireComponent(typeof(Collider))]
 public class SitSpot : MonoBehaviour
@@ -18,6 +19,8 @@ public class SitSpot : MonoBehaviour
     public GameObject capsuleVisual;                // optional: mesh child to hide
     public FirstPersonController fpc;               // stays enabled so LateUpdate runs
     public StarterAssetsInputs starterInputs;
+    public Drinkable drinkable;
+    public GameSceneManager sceneManager;
 
     [Header("UI Prompt")]
     public GameObject promptRoot;
@@ -40,11 +43,18 @@ public class SitSpot : MonoBehaviour
     float seatPitch, seatYaw;                       // seated look angles
 
     public bool IsSitting => isSitting;
+    
+    private Drunkness _currentDrunkness;
+    private int _currentLevel;
 
     void Awake()
     {
+        _currentDrunkness = (Drunkness) PlayerPrefs.GetInt("Drunkness");
+        _currentLevel = PlayerPrefs.GetInt("Level");
         var col = GetComponent<Collider>();
         if (col) col.isTrigger = true;
+        
+        print(_currentDrunkness);
 
         // Autofind common refs
         if (!playerCapsule)
@@ -61,6 +71,8 @@ public class SitSpot : MonoBehaviour
         TogglePrompt(false, false);
 
         if (fadeCanvas) fadeCanvas.alpha = 0f; // start fully visible
+
+        StartCoroutine(SitAndDrink());
     }
 
     void Update()
@@ -85,6 +97,30 @@ public class SitSpot : MonoBehaviour
         // Rotate the seat anchor from look input and stop FPC from also rotating the body
         ApplySeatedLook();
         if (starterInputs) starterInputs.look = Vector2.zero;
+    }
+
+    public IEnumerator SitAndDrink()
+    {
+        yield return Fade(1f); // fade to black
+
+        Sit();
+
+        yield return Fade(0f); // fade back in
+        
+        drinkable.Drink(vcam.transform);
+
+        if (_currentDrunkness != Drunkness.Heavy)
+        {
+            _currentDrunkness += 1;
+            PlayerPrefs.SetInt("Drunkness", (int)_currentDrunkness + 1);
+            PlayerPrefs.Save();
+            
+            print(_currentDrunkness);
+        }
+        else
+        {
+            sceneManager.GoToNextLevel();
+        }
     }
 
     IEnumerator SitRoutine()

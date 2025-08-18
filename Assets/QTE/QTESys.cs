@@ -13,6 +13,8 @@ public class QTESys : MonoBehaviour
     public int CorrectKey;
     public int CountingDown;
 
+    public SitSpot sitSpot;
+
     public void Update()
     {
         if (WaitingForKey == 0)
@@ -86,6 +88,7 @@ public class QTESys : MonoBehaviour
         {
             CountingDown = 2;
             PassBox.text = "FAIL!!!!";
+            sitSpot.SitAndDrink();
             yield return new WaitForSeconds(1.5f);
             CorrectKey = 0;
             PassBox.text = "";
@@ -103,7 +106,7 @@ public class QTESys : MonoBehaviour
         {
             QTEGen = 10;
             CountingDown = 2;
-            PassBox.text = "FAIL!!!!";
+            sitSpot.SitAndDrink();
             yield return new WaitForSeconds(1.5f);
             CorrectKey = 0;
             PassBox.text = "";
