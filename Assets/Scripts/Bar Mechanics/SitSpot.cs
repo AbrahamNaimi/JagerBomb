@@ -4,6 +4,8 @@ using UnityEngine.InputSystem;
 using StarterAssets;
 using Cinemachine;
 using System.Collections;
+using Puzzles.Puzzle_Generation;
+using UnityEngine.Serialization;
 
 [RequireComponent(typeof(Collider))]
 public class SitSpot : MonoBehaviour
@@ -18,6 +20,10 @@ public class SitSpot : MonoBehaviour
     public GameObject capsuleVisual;                // optional: mesh child to hide
     public FirstPersonController fpc;               // stays enabled so LateUpdate runs
     public StarterAssetsInputs starterInputs;
+    public Drinkable drinkable;
+    public GameSceneManager sceneManager;
+    public GameObject qteObject;
+    public float qteInterval;
 
     [Header("UI Prompt")]
     public GameObject promptRoot;
@@ -40,11 +46,22 @@ public class SitSpot : MonoBehaviour
     float seatPitch, seatYaw;                       // seated look angles
 
     public bool IsSitting => isSitting;
+    
+    private Drunkness _currentDrunkness;
+    private int _numberOfDrinkingImpulses;
+    private float _timeSinceLastQTE = 7.0f;
+    private GameObject _QTE;
+    private GameObject _nextQTE;
 
     void Awake()
     {
+        _currentDrunkness = (Drunkness) PlayerPrefs.GetInt("Drunkness");
+        _numberOfDrinkingImpulses = PlayerPrefs.GetInt("Level") * 3;
         var col = GetComponent<Collider>();
         if (col) col.isTrigger = true;
+        
+        _QTE = Instantiate(qteObject, Vector3.zero, Quaternion.identity);
+        _QTE.GetComponentInChildren<QTESys>().sitSpot =  this;
 
         // Autofind common refs
         if (!playerCapsule)
@@ -60,11 +77,22 @@ public class SitSpot : MonoBehaviour
 
         TogglePrompt(false, false);
 
-        if (fadeCanvas) fadeCanvas.alpha = 0f; // start fully visible
+        if (fadeCanvas) fadeCanvas.alpha = 0f; 
     }
 
     void Update()
     {
+        _timeSinceLastQTE += Time.deltaTime;
+        
+        if (!_QTE.activeInHierarchy && _timeSinceLastQTE > qteInterval)
+        {
+            _QTE.SetActive(true);
+            _nextQTE = Instantiate(qteObject, Vector3.zero, Quaternion.identity);
+            _nextQTE.GetComponentInChildren<QTESys>().sitSpot =  this;
+            _QTE =  _nextQTE;
+            _timeSinceLastQTE = 0f;
+        }
+        
         if (playerInZone && Keyboard.current != null && interactKey != Key.None &&
             Keyboard.current[interactKey].wasPressedThisFrame)
         {
@@ -85,6 +113,31 @@ public class SitSpot : MonoBehaviour
         // Rotate the seat anchor from look input and stop FPC from also rotating the body
         ApplySeatedLook();
         if (starterInputs) starterInputs.look = Vector2.zero;
+    }
+
+    public IEnumerator SitAndDrink()
+    {
+        yield return Fade(1f);
+
+        Sit();
+
+        yield return Fade(0f);
+        
+        drinkable.Drink(vcam.transform);
+
+        if (_currentDrunkness != Drunkness.Heavy)
+        {
+            _currentDrunkness += 1;
+            PlayerPrefs.SetInt("Drunkness", (int)_currentDrunkness + 1);
+            PlayerPrefs.Save();
+            
+            print(_currentDrunkness);
+        }
+        else
+        {
+            yield return Fade(2f);
+            sceneManager.GoToNextLevel();
+        }
     }
 
     IEnumerator SitRoutine()

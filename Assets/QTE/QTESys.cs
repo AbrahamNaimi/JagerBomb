@@ -1,24 +1,27 @@
 using System.Collections;
 using UnityEngine;
-using TMPro; 
-using UnityEngine.InputSystem; 
+using TMPro;
+using UnityEngine.InputSystem;
 
 public class QTESys : MonoBehaviour
 {
-    public TextMeshProUGUI DisplayBox; 
-    public TextMeshProUGUI PassBox;   
+    public GameObject QteObject;
+    public SitSpot sitSpot;
+    public TextMeshProUGUI DisplayBox;
+    public TextMeshProUGUI PassBox;
 
     public int QTEGen;
     public int WaitingForKey;
-    public int CorrectKey;
-    public int CountingDown;
+    public bool CorrectKeyPressed;
+    public bool CountingDown;
+
 
     public void Update()
     {
         if (WaitingForKey == 0)
         {
             QTEGen = Random.Range(0, 3);
-            CountingDown = 1;
+            CountingDown = true;
             StartCoroutine(CountDown());
 
             switch (QTEGen)
@@ -40,28 +43,27 @@ public class QTESys : MonoBehaviour
             }
         }
 
-        
+
         if (WaitingForKey == 1)
         {
             if (Keyboard.current.anyKey.wasPressedThisFrame)
             {
+                print("Key triggered");
                 switch (QTEGen)
                 {
-                    case 0: 
-                        CorrectKey = Keyboard.current.qKey.wasPressedThisFrame ? 1 : 2;
-                        StartCoroutine(KeyPressing());
+                    case 0:
+                        CorrectKeyPressed = Keyboard.current.qKey.wasPressedThisFrame;
                         break;
 
-                    case 1: 
-                        CorrectKey = Keyboard.current.rKey.wasPressedThisFrame ? 1 : 2;
-                        StartCoroutine(KeyPressing());
+                    case 1:
+                        CorrectKeyPressed = Keyboard.current.rKey.wasPressedThisFrame;
                         break;
 
-                    case 2: 
-                        CorrectKey = Keyboard.current.tKey.wasPressedThisFrame ? 1 : 2;
-                        StartCoroutine(KeyPressing());
+                    case 2:
+                        CorrectKeyPressed = Keyboard.current.tKey.wasPressedThisFrame;
                         break;
                 }
+                StartCoroutine(KeyPressing());
             }
         }
     }
@@ -69,48 +71,31 @@ public class QTESys : MonoBehaviour
     IEnumerator KeyPressing()
     {
         QTEGen = 10;
-        if (CorrectKey == 1)
+        if (!CorrectKeyPressed)
         {
-            CountingDown = 2;
-            PassBox.text = "PASS!";
-            yield return new WaitForSeconds(1.5f);
-            CorrectKey = 0;
-            PassBox.text = "";
-            DisplayBox.text = "";
-            yield return new WaitForSeconds(1.5f);
-            WaitingForKey = 0;
-            CountingDown = 1;
+            StartCoroutine(sitSpot.SitAndDrink());
+            print("Drink");
+            PassBox.text = "Incorrect. Man that bums me out, I can't do anything. Time for a drink.";
         }
-
-        if (CorrectKey == 2)
+        else
         {
-            CountingDown = 2;
-            PassBox.text = "FAIL!!!!";
-            yield return new WaitForSeconds(1.5f);
-            CorrectKey = 0;
-            PassBox.text = "";
-            DisplayBox.text = "";
-            yield return new WaitForSeconds(1.5f);
-            WaitingForKey = 0;
-            CountingDown = 1;
+            PassBox.text = "I gotta lay off the booze man";
         }
+        CountingDown = false;
+        yield return new WaitForSeconds(1.5f);
+        Destroy(QteObject);
     }
 
     IEnumerator CountDown()
     {
         yield return new WaitForSeconds(1.5f);
-        if (CountingDown == 1)
+        if (CountingDown)
         {
-            QTEGen = 10;
-            CountingDown = 2;
-            PassBox.text = "FAIL!!!!";
-            yield return new WaitForSeconds(1.5f);
-            CorrectKey = 0;
-            PassBox.text = "";
-            DisplayBox.text = "";
-            yield return new WaitForSeconds(1.5f);
-            WaitingForKey = 0;
-            CountingDown = 1;
+            StartCoroutine(sitSpot.SitAndDrink());
+            PassBox.text = "Too late. Man that bums me out, I can't do anything. Time for a drink.";
         }
+        
+        yield return new WaitForSeconds(1.5f);
+        Destroy(QteObject);
     }
 }

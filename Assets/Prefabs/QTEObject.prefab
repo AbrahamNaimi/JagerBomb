@@ -44,11 +44,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9e96624d32461634981d8eb472714bde, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  QteObject: {fileID: 7437373704939617308}
   DisplayBox: {fileID: 5269097315333466635}
   PassBox: {fileID: 4859016855694630333}
   QTEGen: 0
   WaitingForKey: 0
-  CorrectKey: 0
+  CorrectKeyPressed: 0
   CountingDown: 0
 --- !u!1 &5039527214678198886
 GameObject:
@@ -337,7 +338,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &5937109084866077571
 Transform:
   m_ObjectHideFlags: 0
