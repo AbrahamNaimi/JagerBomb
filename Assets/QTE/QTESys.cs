@@ -48,7 +48,6 @@ public class QTESys : MonoBehaviour
         {
             if (Keyboard.current.anyKey.wasPressedThisFrame)
             {
-                print("Key triggered");
                 switch (QTEGen)
                 {
                     case 0:
@@ -64,6 +63,7 @@ public class QTESys : MonoBehaviour
                         break;
                 }
                 StartCoroutine(KeyPressing());
+                WaitingForKey = -1;
             }
         }
     }
@@ -74,7 +74,6 @@ public class QTESys : MonoBehaviour
         if (!CorrectKeyPressed)
         {
             StartCoroutine(sitSpot.SitAndDrink());
-            print("Drink");
             PassBox.text = "Incorrect. Man that bums me out, I can't do anything. Time for a drink.";
         }
         else
