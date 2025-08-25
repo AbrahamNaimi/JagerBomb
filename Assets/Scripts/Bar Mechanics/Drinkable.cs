@@ -55,8 +55,6 @@ public class Drinkable : MonoBehaviour
             yield return new WaitForSeconds(sipDuration);
         }
 
-        OnSipFinished();
-
         // return to start
         yield return LerpPose(targetPos, startPos, targetRot, startRot, returnDuration);
 
@@ -77,10 +75,5 @@ public class Drinkable : MonoBehaviour
         }
         transform.position = toPos;
         transform.rotation = toRot;
-    }
-
-    public void OnSipFinished()
-    {
-        UnityEngine.Debug.Log("message");
     }
 }
