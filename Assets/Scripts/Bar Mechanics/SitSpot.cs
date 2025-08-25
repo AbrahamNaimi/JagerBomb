@@ -49,19 +49,25 @@ public class SitSpot : MonoBehaviour
     
     private Drunkness _currentDrunkness;
     private int _numberOfDrinkingImpulses;
+    private int _pastDrunkImpulses;
     private float _timeSinceLastQTE = 7.0f;
     private GameObject _QTE;
     private GameObject _nextQTE;
+    private bool _newSceneTriggered;
 
-    void Awake()
+    void Start()
     {
         _currentDrunkness = (Drunkness) PlayerPrefs.GetInt("Drunkness");
         _numberOfDrinkingImpulses = PlayerPrefs.GetInt("Level") * 3;
-        var col = GetComponent<Collider>();
-        if (col) col.isTrigger = true;
-        
+
         _QTE = Instantiate(qteObject, Vector3.zero, Quaternion.identity);
         _QTE.GetComponentInChildren<QTESys>().sitSpot =  this;
+    }
+    
+    void Awake()
+    {
+        var col = GetComponent<Collider>();
+        if (col) col.isTrigger = true;
 
         // Autofind common refs
         if (!playerCapsule)
@@ -82,6 +88,14 @@ public class SitSpot : MonoBehaviour
 
     void Update()
     {
+        if (_newSceneTriggered) return;
+        if (_pastDrunkImpulses >= _numberOfDrinkingImpulses)
+        {
+            StartCoroutine(NextLevel());
+            _newSceneTriggered = true;
+            return;
+        }
+        
         _timeSinceLastQTE += Time.deltaTime;
         
         if (!_QTE.activeInHierarchy && _timeSinceLastQTE > qteInterval)
@@ -91,6 +105,7 @@ public class SitSpot : MonoBehaviour
             _nextQTE.GetComponentInChildren<QTESys>().sitSpot =  this;
             _QTE =  _nextQTE;
             _timeSinceLastQTE = 0f;
+            _pastDrunkImpulses++;
         }
         
         if (playerInZone && Keyboard.current != null && interactKey != Key.None &&
@@ -117,27 +132,34 @@ public class SitSpot : MonoBehaviour
 
     public IEnumerator SitAndDrink()
     {
-        yield return Fade(1f);
-
-        Sit();
-
-        yield return Fade(0f);
+        if (!isSitting)
+        {
+            yield return Fade(1f);
+        
+            Sit();
+        
+            yield return Fade(0f);
+        }
         
         drinkable.Drink(vcam.transform);
+        
+        PlayerPrefs.SetInt("Drunkness", (int)_currentDrunkness + 1);
+        PlayerPrefs.Save();
+        
+        _currentDrunkness = (Drunkness) PlayerPrefs.GetInt("Drunkness");
 
-        if (_currentDrunkness != Drunkness.Heavy)
+        if (_currentDrunkness == Drunkness.Heavy)
         {
-            _currentDrunkness += 1;
-            PlayerPrefs.SetInt("Drunkness", (int)_currentDrunkness + 1);
-            PlayerPrefs.Save();
-            
-            print(_currentDrunkness);
+            StartCoroutine(NextLevel());
         }
-        else
-        {
-            yield return Fade(2f);
-            sceneManager.GoToNextLevel();
-        }
+    }
+
+    private IEnumerator NextLevel()
+    {
+        _newSceneTriggered = true;
+        yield return new WaitForSeconds(2f);
+        yield return Fade(1f);
+        sceneManager.GoToNextLevel();
     }
 
     IEnumerator SitRoutine()
