@@ -1340,10 +1340,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'You succesfully defused the bomb!
-
-
-    Your time was {time}'
+  m_text: You succesfully defused the bomb!
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -3061,7 +3058,7 @@ GameObject:
   - component: {fileID: 572500345}
   - component: {fileID: 572500347}
   m_Layer: 5
-  m_Name: Retry Button
+  m_Name: Next level Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3171,7 +3168,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1005214504}
         m_TargetAssemblyTypeName: Puzzles.EndscreenController, Assembly-CSharp
-        m_MethodName: RetryLevel
+        m_MethodName: NextLevel
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -6922,7 +6919,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1256525140}
   m_LocalRotation: {x: 0.7071068, y: -0, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 0, z: -0.54319656}
+  m_LocalPosition: {x: 0, y: 0, z: -0.535}
   m_LocalScale: {x: 0.1125, y: 0.09, z: 0.112499975}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -11672,6 +11669,10 @@ MonoBehaviour:
   cameraDistanceToPuzzle: 0.75
   timerController: {fileID: 1469785991}
   puzzleEndScreen: {fileID: 1005214500}
+  timePerLevelSeconds:
+  - 120
+  - 180
+  - 240
 --- !u!1 &2101825308
 GameObject:
   m_ObjectHideFlags: 0
