@@ -28,10 +28,6 @@ namespace Puzzles
 
         public void NextLevel()
         {
-            PlayerPrefs.SetInt("Level", _currentLevel + 1);
-            PlayerPrefs.SetInt("Drunkness", (int)Drunkness.Light);
-            PlayerPrefs.Save();
-
             gameSceneManager.GoToNextLevel();
         }
 
