@@ -6,7 +6,7 @@ using UnityEngine.SceneManagement;
 public class GameSceneManager : MonoBehaviour
 {
     public static GameSceneManager Instance;
-    private int currentLevel = 1;
+    private int _currentLevel;
     [SerializeField] private int maxLevels = 3;
 
     private void Awake()
@@ -14,30 +14,17 @@ public class GameSceneManager : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
-            DontDestroyOnLoad(gameObject);
             return;
         }
 
         Destroy(gameObject);
-
-    }
-
-    // Simulate "New Game" button press in main menu
-    // WARNING: only for testing — remove later
-    private IEnumerator Start()
-    {
-        if (SceneManager.GetActiveScene().name == "TestStartScene")
-        {
-            yield return new WaitForSeconds(5f);
-            StartNewGame();
-        }
     }
 
     // Call this method from main menu to begin a new game
     public void StartNewGame()
     {
         PlayerPrefs.SetInt("Level", 1);
-        PlayerPrefs.SetInt("Drunkness", (int) Drunkness.Light);
+        PlayerPrefs.SetInt("Drunkness", (int)Drunkness.Light);
         PlayerPrefs.Save();
         LoadBarScene();
     }
@@ -45,26 +32,39 @@ public class GameSceneManager : MonoBehaviour
     // Call this method to load Bar scene
     private void LoadBarScene()
     {
-        SceneManager.LoadScene("BarScene");
+        SceneManager.UnloadSceneAsync(SceneManager.GetActiveScene().buildIndex);
+        SceneManager.LoadSceneAsync("BarSceneNew", mode: LoadSceneMode.Single);
+    }
+
+    private void LoadPuzzleScene()
+    {
+        SceneManager.UnloadSceneAsync(SceneManager.GetActiveScene().buildIndex);
+        SceneManager.LoadSceneAsync("Puzzle 01", mode: LoadSceneMode.Single);
     }
 
     // Method used for loading level scene
     public void LoadCurrentLevelScene()
     {
-        string sceneName = GetLevelSceneName(currentLevel);
-        Debug.Log("Loading current level scene: " + sceneName);
-        SceneManager.LoadScene(sceneName);
+        string sceneName = SceneManager.GetActiveScene().name;
+        SceneManager.LoadSceneAsync(sceneName);
     }
 
     // Call this method after completing a level
     public void GoToNextLevel()
     {
-        currentLevel++;
-        Debug.Log("GoToNextLevel called, currentLevel: " + currentLevel);
-
-        if (currentLevel > maxLevels)
+        if (SceneManager.GetActiveScene().name == "BarSceneNew")
         {
-            SceneManager.LoadScene("EndScene");
+            LoadPuzzleScene();
+            return;
+        }
+        _currentLevel++;
+        PlayerPrefs.SetInt("Level", _currentLevel);
+        PlayerPrefs.SetInt("Drunkness", (int)Drunkness.Light);
+        PlayerPrefs.Save();
+        
+        if (_currentLevel > maxLevels)
+        {
+            SceneManager.LoadScene("EndScene", mode: LoadSceneMode.Single);
             return;
         }
 
@@ -74,16 +74,6 @@ public class GameSceneManager : MonoBehaviour
     // Call this method after failing a level
     public void Explode()
     {
-        SceneManager.LoadScene("EndScene");
+        SceneManager.LoadSceneAsync("EndScene", mode: LoadSceneMode.Single);
     }
-
-    // Method for converting levelNumber to corresponding scene name
-    private string GetLevelSceneName(int levelNumber)
-    {
-        return $"LevelDay{levelNumber}";
-    }
-
-    // Method for retrieving current level
-    public int GetCurrentLevel() => currentLevel;
-    
 }
