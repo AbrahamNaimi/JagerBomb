@@ -45,6 +45,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   QteObject: {fileID: 7437373704939617308}
+  sitSpot: {fileID: 0}
   DisplayBox: {fileID: 5269097315333466635}
   PassBox: {fileID: 4859016855694630333}
   QTEGen: 0
@@ -181,7 +182,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: -295.40256, y: 0, z: -294.76782, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
