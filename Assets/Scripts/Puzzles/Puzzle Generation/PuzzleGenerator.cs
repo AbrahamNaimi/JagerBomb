@@ -12,13 +12,6 @@ namespace Puzzles.Puzzle_Generation
         private readonly int[] _mediumPuzzles = { 0, 1, 3, 5 };
         private readonly int[] _hardPuzzles = { 0, 1, 3, 4, 5 };
 
-        public PuzzleGenerator()
-        {
-            PlayerPrefs.SetInt("Level", 1);
-            PlayerPrefs.SetInt("Drunkness", (int)Drunkness.Heavy);
-            PlayerPrefs.Save();
-        }
-
         public void SetPuzzles(GameObject[] puzzleSlots)
         {
             int[] toBeActivatedPuzzles = { };
