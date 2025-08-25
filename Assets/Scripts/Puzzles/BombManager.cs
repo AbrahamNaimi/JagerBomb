@@ -21,6 +21,7 @@ namespace Puzzles
         public float cameraDistanceToPuzzle = 0.75f;
         public TimerController timerController;
         public GameObject puzzleEndScreen;
+        public float[] timePerLevelSeconds = { 120f, 180f,240f };
 
         private Vector3 _screenPoint;
         private Vector3 _offset;
@@ -45,7 +46,7 @@ namespace Puzzles
             _cameraStartPosition = mainCamera.transform.position;
             timerCamera.enabled = false;
             
-            timerController.StartTimer(1.0f);
+            timerController.StartTimer(timePerLevelSeconds[PlayerPrefs.GetInt("Level") - 1]);
         }
 
         void Update()
@@ -54,7 +55,6 @@ namespace Puzzles
             {
                 IsBombSolved = IsBombDefused();
                 SetIsSolved(IsBombSolved);
-                
             }
         }
 
