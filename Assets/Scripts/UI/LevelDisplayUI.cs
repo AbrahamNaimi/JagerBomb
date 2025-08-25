@@ -12,7 +12,7 @@ public class LevelDisplayUI : MonoBehaviour
 
     void Start()
     {
-        int currentLevel = GameSceneManager.Instance.GetCurrentLevel();
+        int currentLevel = PlayerPrefs.GetInt("Level", 1);
         levelText.text = $"Workday {currentLevel}";
     }
 }
