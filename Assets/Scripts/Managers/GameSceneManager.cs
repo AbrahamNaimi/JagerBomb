@@ -9,6 +9,12 @@ public class GameSceneManager : MonoBehaviour
     private int _currentLevel;
     [SerializeField] private int maxLevels = 3;
 
+    // TODO: Check if necessary
+    void Start()
+    {
+        _currentLevel = PlayerPrefs.GetInt("Level", 1);
+    }
+
     private void Awake()
     {
         if (Instance == null)
@@ -32,8 +38,8 @@ public class GameSceneManager : MonoBehaviour
     // Call this method to load Bar scene
     private void LoadBarScene()
     {
-        SceneManager.UnloadSceneAsync(SceneManager.GetActiveScene().buildIndex);
         SceneManager.LoadSceneAsync("BarSceneNew", mode: LoadSceneMode.Single);
+        SceneManager.UnloadSceneAsync(SceneManager.GetActiveScene().buildIndex);
     }
 
     private void LoadPuzzleScene()
