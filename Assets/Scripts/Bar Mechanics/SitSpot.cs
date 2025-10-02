@@ -4,6 +4,7 @@ using UnityEngine.InputSystem;
 using StarterAssets;
 using Cinemachine;
 using System.Collections;
+using Controllers;
 using Puzzles.Puzzle_Generation;
 using UnityEngine.Serialization;
 
@@ -61,7 +62,7 @@ public class SitSpot : MonoBehaviour
         _numberOfDrinkingImpulses = PlayerPrefs.GetInt("Level") * 3;
 
         _QTE = Instantiate(qteObject, Vector3.zero, Quaternion.identity);
-        _QTE.GetComponentInChildren<QTESys>().sitSpot =  this;
+        _QTE.GetComponentInChildren<QuicktimeEventController>().sitSpot =  this;
     }
     
     void Awake()
@@ -102,7 +103,7 @@ public class SitSpot : MonoBehaviour
         {
             _QTE.SetActive(true);
             _nextQTE = Instantiate(qteObject, Vector3.zero, Quaternion.identity);
-            _nextQTE.GetComponentInChildren<QTESys>().sitSpot =  this;
+            _nextQTE.GetComponentInChildren<QuicktimeEventController>().sitSpot =  this;
             _QTE =  _nextQTE;
             _timeSinceLastQTE = 0f;
             _pastDrunkImpulses++;
