@@ -25,6 +25,7 @@ namespace My_Assets.Puzzles.Logbook
         public Sprite notebookPageFlipped;
         public Sprite frontCover;
         public Sprite backCover;
+        public GameObject bookPage;
         public GameObject leftPage;
         public GameObject rightPage;
         
@@ -41,7 +42,7 @@ namespace My_Assets.Puzzles.Logbook
         {
             GetHeightAndWidth();
             GeneratePages();
-            SetPages(_transparentPage, _pages[0]);
+            SetPages(_transparentPage, _pages[_currentPage]);
         }
 
         private void GetHeightAndWidth()
@@ -51,21 +52,21 @@ namespace My_Assets.Puzzles.Logbook
             pageRect.GetWorldCorners(corners);
             
             _width = Vector3.Distance(corners[0], corners[1]);
-            _height = Vector3.Distance(corners[0], corners[3]);;
+            _height = Vector3.Distance(corners[0], corners[3]);
         }
 
         private void GeneratePages()
         {
-            _transparentPage = _logbookPageCreator.BookPage("Page 0", transparent, _width, _height, null, null);
-            _emptyRightPage = _logbookPageCreator.BookPage("Page 0", notebookPage, _width, _height, null, null);
-            _pages.Add(_logbookPageCreator.BookPage("Front cover", frontCover, _width, _height, "Title", null));
-            _pages.Add(_logbookPageCreator.BookPage("Back cover", backCover, _width, _height, null, null));
+            _transparentPage = _logbookPageCreator.BookPage("Transparent page", Instantiate(bookPage), transparent, _width, _height, null, null);
+            _emptyRightPage = _logbookPageCreator.BookPage("Empty page", Instantiate(bookPage), notebookPage, _width, _height, null, null);
+            _pages.Add(_logbookPageCreator.BookPage("Front cover", Instantiate(bookPage), frontCover, _width, _height, "<color=#ffffff>JagerLog</color>", null));
+            _pages.Add(_logbookPageCreator.BookPage("Back cover", Instantiate(bookPage), backCover, _width, _height, null, null));
         }
         
         public void AddPage(LogBookPage page)
         {
             Sprite background = _pages.Count % 2 != 0 ? notebookPage : notebookPageFlipped;
-            _pages.Insert(_pages.Count - 1, _logbookPageCreator.BookPage(page.Name, background, _width, _height, page.Title, page.Content));
+            _pages.Insert(_pages.Count - 1, _logbookPageCreator.BookPage(page.Name, Instantiate(bookPage), background, _width, _height, page.Title, page.Content));
         }
 
         private void SetPages(GameObject lPage, GameObject rPage)

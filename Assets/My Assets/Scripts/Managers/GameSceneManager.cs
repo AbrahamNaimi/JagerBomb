@@ -61,6 +61,7 @@ namespace My_Assets.Managers
         {
             if (SceneManager.GetActiveScene().name == "BarSceneNew")
             {
+                Cursor.lockState = CursorLockMode.None;
                 LoadPuzzleScene();
                 return;
             }
@@ -75,6 +76,7 @@ namespace My_Assets.Managers
                 return;
             }
 
+            Cursor.lockState = CursorLockMode.Locked;
             LoadBarScene();
         }
 
