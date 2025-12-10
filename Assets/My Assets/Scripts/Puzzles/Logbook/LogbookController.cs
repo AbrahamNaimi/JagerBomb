@@ -59,7 +59,7 @@ namespace My_Assets.Puzzles.Logbook
         {
             _transparentPage = _logbookPageCreator.BookPage("Transparent page", Instantiate(bookPage), transparent, _width, _height, null, null);
             _emptyRightPage = _logbookPageCreator.BookPage("Empty page", Instantiate(bookPage), notebookPage, _width, _height, null, null);
-            _pages.Add(_logbookPageCreator.BookPage("Front cover", Instantiate(bookPage), frontCover, _width, _height, "Title", null));
+            _pages.Add(_logbookPageCreator.BookPage("Front cover", Instantiate(bookPage), frontCover, _width, _height, "<color=#ffffff>JagerLog</color>", null));
             _pages.Add(_logbookPageCreator.BookPage("Back cover", Instantiate(bookPage), backCover, _width, _height, null, null));
         }
         
