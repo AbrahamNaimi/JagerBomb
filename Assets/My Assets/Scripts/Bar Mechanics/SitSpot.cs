@@ -101,14 +101,9 @@ namespace My_Assets.Bar_Mechanics
         
             _timeSinceLastQTE += Time.deltaTime;
         
-            if (!_QTE.activeInHierarchy && _timeSinceLastQTE > qteInterval)
+            if (!_QTE && _timeSinceLastQTE > qteInterval)
             {
-                _QTE.SetActive(true);
-                _nextQTE = Instantiate(qteObject, Vector3.zero, Quaternion.identity);
-                _nextQTE.GetComponentInChildren<QuicktimeEventController>().sitSpot =  this;
-                _QTE =  _nextQTE;
-                _timeSinceLastQTE = 0f;
-                _pastDrunkImpulses++;
+                StartQTERoutine();
             }
         
             if (playerInZone && Keyboard.current != null && interactKey != Key.None &&
@@ -131,6 +126,24 @@ namespace My_Assets.Bar_Mechanics
             // Rotate the seat anchor from look input and stop FPC from also rotating the body
             ApplySeatedLook();
             if (starterInputs) starterInputs.look = Vector2.zero;
+        }
+
+        private void StartQTERoutine()
+        {
+            _nextQTE = Instantiate(qteObject, Vector3.zero, Quaternion.identity);
+            _nextQTE.GetComponentInChildren<QuicktimeEventController>().sitSpot =  this;
+            _QTE =  _nextQTE;
+            _QTE.SetActive(true);
+            _timeSinceLastQTE = 0f;
+        }
+
+        public void DrinkingQTEFinished(bool success)
+        {
+            if (!success)
+            {
+                StartCoroutine(SitAndDrink());
+            }
+            _pastDrunkImpulses++;
         }
 
         public IEnumerator SitAndDrink()
