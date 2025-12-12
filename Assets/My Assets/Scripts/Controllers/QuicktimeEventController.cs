@@ -72,6 +72,10 @@ namespace My_Assets.Controllers
             gameObject.SetActive(true);
         }
 
+        /**
+         * TODO: Story achtig iets toevoegen. Doe dit vóór de yield return om het na het finishen van de QTE te doen.
+         * Je kan evt ook nog een textbox boven de QTE zetten met 'beer O'clock' oid. Kijk maar wat je leuk lijkt.
+         */
         private IEnumerator ShowSuccess()
         {
             mouseClickImage.SetActive(false);
