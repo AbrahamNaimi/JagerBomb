@@ -1,3 +1,4 @@
+using System.Collections;
 using Puzzles.Puzzle_Generation;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -8,6 +9,9 @@ namespace My_Assets.Managers
     {
         public static GameSceneManager Instance;
         private int _currentLevel;
+        [SerializeField] private string barSceneName = "BarSceneNew";
+        [SerializeField] private string puzzleSceneName = "Puzzle 01";
+        [SerializeField] private string endSceneName = "EndScene";
         [SerializeField] private int maxLevels = 3;
 
         // TODO: Check if necessary
@@ -27,42 +31,19 @@ namespace My_Assets.Managers
             Destroy(gameObject);
         }
 
-        // Call this method from main menu to begin a new game
         public void StartNewGame()
         {
             PlayerPrefs.SetInt("Level", 1);
             PlayerPrefs.SetInt("Drunkness", (int)Drunkness.Light);
             PlayerPrefs.Save();
-            LoadBarScene();
+            StartCoroutine(LoadScene(barSceneName, CursorLockMode.Locked));
         }
 
-        // Call this method to load Bar scene
-        private void LoadBarScene()
-        {
-            SceneManager.LoadSceneAsync("BarSceneNew", mode: LoadSceneMode.Single);
-            SceneManager.UnloadSceneAsync(SceneManager.GetActiveScene().buildIndex);
-        }
-
-        private void LoadPuzzleScene()
-        {
-            SceneManager.UnloadSceneAsync(SceneManager.GetActiveScene().buildIndex);
-            SceneManager.LoadSceneAsync("Puzzle 01", mode: LoadSceneMode.Single);
-        }
-
-        // Method used for loading level scene
-        public void LoadCurrentLevelScene()
-        {
-            string sceneName = SceneManager.GetActiveScene().name;
-            SceneManager.LoadSceneAsync(sceneName);
-        }
-
-        // Call this method after completing a level
         public void GoToNextLevel()
         {
-            if (SceneManager.GetActiveScene().name == "BarSceneNew")
+            if (SceneManager.GetActiveScene().name == barSceneName)
             {
-                Cursor.lockState = CursorLockMode.None;
-                LoadPuzzleScene();
+                StartCoroutine(LoadScene(puzzleSceneName, CursorLockMode.None));
                 return;
             }
             _currentLevel++;
@@ -72,18 +53,31 @@ namespace My_Assets.Managers
         
             if (_currentLevel > maxLevels)
             {
-                SceneManager.LoadScene("EndScene", mode: LoadSceneMode.Single);
+                StartCoroutine(LoadScene(endSceneName, CursorLockMode.None));
                 return;
             }
 
-            Cursor.lockState = CursorLockMode.Locked;
-            LoadBarScene();
+            
+            StartCoroutine(LoadScene(barSceneName, CursorLockMode.Locked));
+        }
+        
+        private IEnumerator LoadScene(string sceneName, CursorLockMode cursorLockMode)
+        {
+            Cursor.lockState = cursorLockMode;
+            
+            Scene currentScene = SceneManager.GetActiveScene();
+            AsyncOperation loadSceneOperation = SceneManager.LoadSceneAsync(sceneName, mode: LoadSceneMode.Single);
+
+            while (loadSceneOperation != null && !loadSceneOperation.isDone) yield return null;
+            
+            SceneManager.SetActiveScene(SceneManager.GetSceneByName(sceneName));
+            SceneManager.UnloadSceneAsync(currentScene.buildIndex);
         }
 
-        // Call this method after failing a level
-        public void Explode()
+        public void ReloadScene()
         {
-            SceneManager.LoadSceneAsync("EndScene", mode: LoadSceneMode.Single);
+            string sceneName = SceneManager.GetActiveScene().name;
+            SceneManager.LoadSceneAsync(sceneName);
         }
     }
 }

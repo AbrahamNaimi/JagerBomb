@@ -53,9 +53,9 @@ namespace My_Assets.Bar_Mechanics
         private Drunkness _currentDrunkness;
         private int _numberOfDrinkingImpulses;
         private int _pastDrunkImpulses;
-        private float _timeSinceLastQTE = 7.0f;
+        private float _timeSinceLastQTE;
         private GameObject _QTE;
-        private GameObject _nextQTE;
+        private QuicktimeEventController _QTEController;
         private bool _newSceneTriggered;
 
         void Start()
@@ -64,7 +64,8 @@ namespace My_Assets.Bar_Mechanics
             _numberOfDrinkingImpulses = PlayerPrefs.GetInt("Level") * 3;
 
             _QTE = Instantiate(qteObject, Vector3.zero, Quaternion.identity);
-            _QTE.GetComponentInChildren<QuicktimeEventController>().sitSpot =  this;
+            _QTEController = _QTE.GetComponent<QuicktimeEventController>();
+            _QTEController.sitSpot =  this;
         }
     
         void Awake()
@@ -98,18 +99,8 @@ namespace My_Assets.Bar_Mechanics
                 _newSceneTriggered = true;
                 return;
             }
-        
-            _timeSinceLastQTE += Time.deltaTime;
-        
-            if (!_QTE.activeInHierarchy && _timeSinceLastQTE > qteInterval)
-            {
-                _QTE.SetActive(true);
-                _nextQTE = Instantiate(qteObject, Vector3.zero, Quaternion.identity);
-                _nextQTE.GetComponentInChildren<QuicktimeEventController>().sitSpot =  this;
-                _QTE =  _nextQTE;
-                _timeSinceLastQTE = 0f;
-                _pastDrunkImpulses++;
-            }
+
+            HandleQTE();
         
             if (playerInZone && Keyboard.current != null && interactKey != Key.None &&
                 Keyboard.current[interactKey].wasPressedThisFrame)
@@ -131,6 +122,29 @@ namespace My_Assets.Bar_Mechanics
             // Rotate the seat anchor from look input and stop FPC from also rotating the body
             ApplySeatedLook();
             if (starterInputs) starterInputs.look = Vector2.zero;
+        }
+
+        private void HandleQTE()
+        {
+            if (_timeSinceLastQTE < qteInterval)
+            {
+                _timeSinceLastQTE += Time.deltaTime;
+            }
+        
+            if (!_QTE.activeSelf && _timeSinceLastQTE >= qteInterval)
+            {
+                _QTEController.Init();
+            }
+        }
+
+        public void DrinkingQTEResult(bool success)
+        {
+            if (!success)
+            {
+                StartCoroutine(SitAndDrink());
+            }
+            _timeSinceLastQTE = 0f;
+            _pastDrunkImpulses++;
         }
 
         public IEnumerator SitAndDrink()
@@ -206,7 +220,6 @@ namespace My_Assets.Bar_Mechanics
             seatPitch = NormalizePitch(e.x);
             seatYaw   = e.y;
 
-            SetPlayerVisible(false);
             isSitting = true;
             TogglePrompt(true, true);
         }
@@ -223,7 +236,6 @@ namespace My_Assets.Bar_Mechanics
             playerCapsule.transform.SetPositionAndRotation(savedPlayerPos, savedPlayerRot);
             Physics.SyncTransforms();
 
-            SetPlayerVisible(true);
             isSitting = false;
             TogglePrompt(playerInZone, false);
         }
@@ -273,12 +285,6 @@ namespace My_Assets.Bar_Mechanics
         {
             if (x > 180f) x -= 360f;
             return x;
-        }
-        void SetPlayerVisible(bool visible)
-        {
-            if (capsuleVisual) { capsuleVisual.SetActive(visible); return; }
-            foreach (var r in playerCapsule.GetComponentsInChildren<Renderer>())
-                r.enabled = visible;
         }
         void TogglePrompt(bool show, bool showStandText)
         {

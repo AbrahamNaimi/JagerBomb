@@ -34,7 +34,7 @@ namespace My_Assets.Puzzles
 
         public void RetryLevel()
         {
-            gameSceneManager.LoadCurrentLevelScene();
+            gameSceneManager.ReloadScene();
         }
 
         public void Quit()

@@ -1,104 +1,94 @@
+using System;
 using System.Collections;
 using My_Assets.Bar_Mechanics;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Serialization;
+using Random = UnityEngine.Random;
 
 namespace My_Assets.Controllers
 {
     public class QuicktimeEventController : MonoBehaviour
     {
-        public GameObject QteObject;
         public SitSpot sitSpot;
-        public TextMeshProUGUI DisplayBox;
-        public TextMeshProUGUI PassBox;
 
-        public int QTEGen;
-        public int WaitingForKey;
-        public bool CorrectKeyPressed;
-        public bool CountingDown;
+        public GameObject mouseClickImage;
+        public GameObject zoneRotator;
+        public GameObject bottleRotator;
+        public TextMeshProUGUI messageTMP;
 
+        public float baseSpeed = 60.0f;
 
-        public void Update()
+        private float _rotationSpeed;
+        private float _currentBottleRotation;
+
+        private int _bottleStartRotation;
+        private int _zoneRotation;
+
+        private bool _isFinished;
+        private bool _isSuccessful;
+
+        private string _successMessage = "<color=#008000>Well done!</color> \nYou're handling it well my friend.";
+        private string _failMessage = "<color=#FF0000>Oof!</color> \nIt's tough isn't it.";
+
+        private void Update()
         {
-            if (WaitingForKey == 0)
+            if (!_isFinished)
             {
-                QTEGen = Random.Range(0, 3);
-                CountingDown = true;
-                StartCoroutine(CountDown());
-
-                switch (QTEGen)
+                float rotation = _rotationSpeed * -1 * Time.deltaTime;
+                bottleRotator.transform.Rotate(0, 0, rotation, Space.Self);
+                _currentBottleRotation += rotation;
+            
+            
+                if (Mouse.current.leftButton.wasPressedThisFrame)
                 {
-                    case 0:
-                        WaitingForKey = 1;
-                        DisplayBox.text = "Q";
-                        break;
+                    _isSuccessful = _currentBottleRotation % 360 > _zoneRotation - 30 &&
+                                         _currentBottleRotation % 360 < _zoneRotation + 30;
 
-                    case 1:
-                        WaitingForKey = 1;
-                        DisplayBox.text = "R";
-                        break;
+                    _isFinished = true;
 
-                    case 2:
-                        WaitingForKey = 1;
-                        DisplayBox.text = "T";
-                        break;
-                }
-            }
-
-
-            if (WaitingForKey == 1)
-            {
-                if (Keyboard.current.anyKey.wasPressedThisFrame)
-                {
-                    switch (QTEGen)
-                    {
-                        case 0:
-                            CorrectKeyPressed = Keyboard.current.qKey.wasPressedThisFrame;
-                            break;
-
-                        case 1:
-                            CorrectKeyPressed = Keyboard.current.rKey.wasPressedThisFrame;
-                            break;
-
-                        case 2:
-                            CorrectKeyPressed = Keyboard.current.tKey.wasPressedThisFrame;
-                            break;
-                    }
-                    StartCoroutine(KeyPressing());
-                    WaitingForKey = -1;
+                    StartCoroutine(ShowSuccess());
                 }
             }
         }
 
-        IEnumerator KeyPressing()
+        public void Init()
         {
-            QTEGen = 10;
-            if (!CorrectKeyPressed)
-            {
-                StartCoroutine(sitSpot.SitAndDrink());
-                PassBox.text = "Incorrect. Man that bums me out, I can't do anything. Time for a drink.";
-            }
-            else
-            {
-                PassBox.text = "I gotta lay off the booze man";
-            }
-            CountingDown = false;
-            yield return new WaitForSeconds(1.5f);
-            Destroy(QteObject);
+            _isFinished = false;
+            _isSuccessful = false;
+            messageTMP.text = "";
+            mouseClickImage.SetActive(true);
+            _bottleStartRotation = Random.Range(0, 359);
+            _zoneRotation = Random.Range(_bottleStartRotation + 90, _bottleStartRotation + 320) % 360;
+            _bottleStartRotation *= -1;
+            _zoneRotation *= -1;
+            _currentBottleRotation = _bottleStartRotation;
+            
+            bottleRotator.transform.Rotate(0, 0, _bottleStartRotation);
+            zoneRotator.transform.Rotate(0, 0, _zoneRotation);
+            
+            _rotationSpeed = baseSpeed * PlayerPrefs.GetInt("Level") * (PlayerPrefs.GetInt("Drunkness") + 1);
+            gameObject.SetActive(true);
         }
 
-        IEnumerator CountDown()
+        /**
+         * TODO: Story achtig iets toevoegen. Doe dit vóór de yield return om het na het finishen van de QTE te doen.
+         * Je kan evt ook nog een textbox boven de QTE zetten met 'beer O'clock' oid. Kijk maar wat je leuk lijkt.
+         */
+        private IEnumerator ShowSuccess()
         {
+            mouseClickImage.SetActive(false);
+            
+            messageTMP.text = _isSuccessful ? _successMessage : _failMessage;
+            
             yield return new WaitForSeconds(1.5f);
-            if (CountingDown)
-            {
-                StartCoroutine(sitSpot.SitAndDrink());
-                PassBox.text = "Too late. Man that bums me out, I can't do anything right. Time for a drink.";
-            }
-        
-            yield return new WaitForSeconds(1.5f);
-            Destroy(QteObject);
+            
+            bottleRotator.transform.localEulerAngles = Vector3.zero;
+            zoneRotator.transform.localEulerAngles = Vector3.zero;
+            
+            sitSpot.DrinkingQTEResult(_isSuccessful);
+            gameObject.SetActive(false);
         }
     }
 }

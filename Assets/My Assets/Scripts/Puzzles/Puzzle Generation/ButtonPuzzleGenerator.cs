@@ -26,7 +26,7 @@ namespace My_Assets.Puzzles.Puzzle_Generation
             { Color.pink, "pink" },
             { Color.purple, "purple" },
             { Color.red, "red" },
-            {Color.softYellow, "softYellow" },
+            { Color.softYellow, "softYellow" },
             { Color.steelBlue, "steelBlue" },
             { Color.teal, "teal" },
             { Color.yellow, "yellow" },
