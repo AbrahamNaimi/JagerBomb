@@ -58,16 +58,6 @@ namespace My_Assets.Puzzles.Controllers
         public void ObjectClicked(GameObject hitGameObject)
         {
             if (IsPuzzleSolved) return;
-            string objectName = hitGameObject.name;
-
-            if (objectName == "Reset Button")
-            {
-                _currentCycle = 1;
-                ClearDisplayLights();
-                _pressedButtons.Clear();
-                SetFlashingButton(_solution[_pressedButtons.Count]);
-                return;
-            }
 
             int buttonIndex;
             try
