@@ -38,12 +38,20 @@ namespace My_Assets.Puzzles.Logbook
         private int _currentPage = 0;
         
 
-        void Start()
+    void Start()
+    {
+        GetHeightAndWidth();
+        GeneratePages();
+
+        int currentLevel = PlayerPrefs.GetInt("Level", 1);
+        for (int level = 1; level <= currentLevel; level++)
         {
-            GetHeightAndWidth();
-            GeneratePages();
-            SetPages(_transparentPage, _pages[_currentPage]);
+            AddLevelPage(level);
         }
+
+        SetPages(_transparentPage, _pages[_currentPage]);
+    }
+
 
         private void GetHeightAndWidth()
         {
@@ -110,6 +118,13 @@ namespace My_Assets.Puzzles.Logbook
             _currentPage -= 2;
             SetPages(pagesToShow[0], pagesToShow[1]);
         }
+
+        public void AddLevelPage(int level)
+        {
+            LogBookPage levelPage = LogbookLevelPages.GetPageForLevel(level);
+            AddPage(levelPage);
+        }
+
 
         [CanBeNull]
         private GameObject[] PagesToShow(int pageNumber)

@@ -2,7 +2,7 @@ using System.Collections;
 using Puzzles.Puzzle_Generation;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-
+using My_Assets.Puzzles.Logbook;
 namespace My_Assets.Managers
 {
     public class GameSceneManager : MonoBehaviour
@@ -46,6 +46,12 @@ namespace My_Assets.Managers
                 StartCoroutine(LoadScene(puzzleSceneName, CursorLockMode.None));
                 return;
             }
+            LogbookController logbook = FindFirstObjectByType<LogbookController>();
+            if (logbook != null)
+            {
+                logbook.AddLevelPage(_currentLevel);
+            }
+
             _currentLevel++;
             PlayerPrefs.SetInt("Level", _currentLevel);
             PlayerPrefs.SetInt("Drunkness", (int)Drunkness.Light);
