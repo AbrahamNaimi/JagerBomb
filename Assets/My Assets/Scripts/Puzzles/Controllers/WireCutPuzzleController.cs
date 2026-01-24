@@ -64,7 +64,6 @@ namespace My_Assets.Puzzles.Controllers
             if (wire == null || wire.isCut) return;
 
             _isLocked = true;
-            wire.isCut = true;
 
             if (cutSound != null)
                 AudioSource.PlayClipAtPoint(cutSound, hitGameObject.transform.position);
@@ -74,23 +73,25 @@ namespace My_Assets.Puzzles.Controllers
             switch (wire.outcome)
             {
                 case WireOutcome.Correct:
+                    wire.isCut = true;
                     _correctWiresRemaining--;
+
                     if (_correctWiresRemaining <= 0)
                     {
                         IsPuzzleSolved = true;
                         StartCoroutine(FlashVictory());
                     }
-                    else _isLocked = false;
+                    else
+                    {
+                        _isLocked = false;
+                    }
                     break;
 
                 case WireOutcome.WrongTimePenalty:
                     StartCoroutine(FlashFail(hitGameObject));
                     break;
-
-                case WireOutcome.Explode:
-                    TriggerExplosion();
-                    break;
             }
+
         }
 
         private void GenerateLogbookPage()
@@ -107,21 +108,21 @@ namespace My_Assets.Puzzles.Controllers
             );
         }
 
-        private void TriggerExplosion()
-        {
-            Debug.Log("BOOM! Wrong wire caused explosion.");
-        }
-
         private void SpawnCutFlash(GameObject wire)
         {
-            if (!cutFlashPrefab) return;
+            if (!cutFlashPrefab)
+            {
+                Debug.LogError("CutFlashPrefab NOT assigned!");
+                return;
+            }
 
-            Vector3 spawnPos = wire.transform.position;
-            spawnPos.z -= 0.2f;
-            spawnPos.y -= 0.1f;
+            Debug.Log("Spawning CutFlash");
 
-            Instantiate(cutFlashPrefab, spawnPos, Quaternion.identity, wire.transform);
+            var flash = Instantiate(cutFlashPrefab, wire.transform);
+            flash.transform.localPosition = new Vector3(0f, -0.1f, -0.01f);
         }
+
+
 
         private IEnumerator FlashFail(GameObject wire, float duration = 0.5f)
         {

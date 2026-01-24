@@ -76,7 +76,6 @@ namespace My_Assets.Puzzles.Puzzle_Generation
             for (int i = 0; i < wireCount; i++)
             {
                 if (i < 2) map[i] = WireOutcome.Correct;
-                else if (i == 2) map[i] = WireOutcome.Explode;
                 else map[i] = WireOutcome.WrongTimePenalty;
             }
 
@@ -95,7 +94,7 @@ namespace My_Assets.Puzzles.Puzzle_Generation
 
             return
                 "Two wires must be cut. What color you may ask? That's easy!!\n\n" +
-                "Just solve the Riddles the answer to each is a color:\n" +
+                "Just solve the riddles the answer to each is a color:\n" +
                 $"- {riddles[0]}\n" +
                 $"- {riddles[1]}\n\n" +
                 "Not every mistake is forgiven.";
