@@ -12,6 +12,8 @@ namespace My_Assets.Puzzles.Controllers
     {
         public bool IsPuzzleSolved { get; private set; }
         public LogbookController logbookController;
+        [SerializeField]
+        private TimerController timerController;
 
         public List<GameObject> wires;
         public AudioClip cutSound;
@@ -88,6 +90,7 @@ namespace My_Assets.Puzzles.Controllers
                     break;
 
                 case WireOutcome.WrongTimePenalty:
+                    timerController.DeductTime(10f);
                     StartCoroutine(FlashFail(hitGameObject));
                     break;
             }
@@ -115,8 +118,6 @@ namespace My_Assets.Puzzles.Controllers
                 Debug.LogError("CutFlashPrefab NOT assigned!");
                 return;
             }
-
-            Debug.Log("Spawning CutFlash");
 
             var flash = Instantiate(cutFlashPrefab, wire.transform);
             flash.transform.localPosition = new Vector3(0f, -0.1f, -0.01f);

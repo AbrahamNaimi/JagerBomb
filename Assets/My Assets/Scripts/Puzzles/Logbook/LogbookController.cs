@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using JetBrains.Annotations;
 using UnityEngine;
+using Puzzles.Puzzle_Generation;
 
 namespace My_Assets.Puzzles.Logbook
 {
@@ -28,7 +29,7 @@ namespace My_Assets.Puzzles.Logbook
         public GameObject bookPage;
         public GameObject leftPage;
         public GameObject rightPage;
-        
+
         private float _height;
         private float _width;
         private List<GameObject> _pages = new ();
@@ -44,9 +45,10 @@ namespace My_Assets.Puzzles.Logbook
         GeneratePages();
 
         int currentLevel = PlayerPrefs.GetInt("Level", 1);
+        
         for (int level = 1; level <= currentLevel; level++)
         {
-            AddLevelPage(level);
+              AddLevelPage(level,  PlayerPrefs.GetInt("Drunkness"));
         }
 
         SetPages(_transparentPage, _pages[_currentPage]);
@@ -119,9 +121,9 @@ namespace My_Assets.Puzzles.Logbook
             SetPages(pagesToShow[0], pagesToShow[1]);
         }
 
-        public void AddLevelPage(int level)
+        public void AddLevelPage(int level, int drunkness)
         {
-            LogBookPage levelPage = LogbookLevelPages.GetPageForLevel(level);
+            LogBookPage levelPage = LogbookLevelPages.GetPageForLevel(level, drunkness);
             AddPage(levelPage);
         }
 
