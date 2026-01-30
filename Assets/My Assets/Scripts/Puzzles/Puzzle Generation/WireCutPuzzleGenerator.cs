@@ -70,17 +70,29 @@ namespace My_Assets.Puzzles.Puzzle_Generation
 
         public Dictionary<int, WireOutcome> GenerateOutcomeMap(int wireCount)
         {
-            // first 2 correct, 1 explode, rest penalty
             Dictionary<int, WireOutcome> map = new();
+
+            List<int> indices = Enumerable.Range(0, wireCount)
+                .OrderBy(_ => Random.value)
+                .ToList();
+
+            HashSet<int> correct = new HashSet<int>
+            {
+                indices[0],
+                indices[1]
+            };
 
             for (int i = 0; i < wireCount; i++)
             {
-                if (i < 2) map[i] = WireOutcome.Correct;
-                else map[i] = WireOutcome.WrongTimePenalty;
+                if (correct.Contains(i))
+                    map[i] = WireOutcome.Correct;
+                else
+                    map[i] = WireOutcome.WrongTimePenalty;
             }
 
             return map;
         }
+
 
         public string GenerateLogbookPage(List<Color> correctColors)
         {
