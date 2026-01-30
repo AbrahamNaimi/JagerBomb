@@ -18,6 +18,9 @@ namespace My_Assets.Menus
         public InputActionReference lookAction;
         public InputActionReference jumpAction;
         public InputActionReference pauseAction;
+        private static PauseMenuManager instance;
+
+        [SerializeField] private bool shouldLock;
 
         void Start()
         {
@@ -27,28 +30,68 @@ namespace My_Assets.Menus
             LockCursor();
         }
 
+        private void Awake()
+        {
+            if (instance == null)
+            {
+                instance = this;
+            }
+            else
+            {
+                Destroy(gameObject); // prevent duplicates
+            }
+        }
+
+
+        public void SetupPauseMenuForScene()
+        {
+            if (pauseMenuCanvas != null)
+                pauseMenuCanvas.SetActive(false);
+
+            pauseAction?.action.Enable();
+        }
+
+
         private void OnEnable()
         {
+            SceneManager.sceneLoaded += OnSceneLoaded;
+
             if (pauseAction != null)
             {
-                pauseAction.action.performed += OnPausePressed;
                 pauseAction.action.Enable();
+                pauseAction.action.performed += OnPausePressed;
             }
         }
 
         private void OnDisable()
         {
+            SceneManager.sceneLoaded -= OnSceneLoaded;
+
             if (pauseAction != null)
             {
                 pauseAction.action.performed -= OnPausePressed;
-                pauseAction.action.Disable();
             }
         }
+
+
+        private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+        {
+            Time.timeScale = 1f;
+            isPaused = false;
+
+            if (pauseMenuCanvas == null)
+                pauseMenuCanvas = GameObject.Find("PauseMenuCanvas");
+
+            if (pauseMenuCanvas != null)
+                pauseMenuCanvas.SetActive(false);
+        }
+
 
         private void OnPausePressed(InputAction.CallbackContext context)
         {
             TogglePause();
         }
+
 
         public void TogglePause()
         {
@@ -62,30 +105,36 @@ namespace My_Assets.Menus
             isPaused = true;
             pauseMenuCanvas?.SetActive(true);
 
+            if (shouldLock)
+            {
+                moveAction?.action.Disable();
+                lookAction?.action.Disable();
+                jumpAction?.action.Disable();
+                playerInput?.SwitchCurrentActionMap("UI");
+                UnlockCursor();
+            }
             previousCursorState = Cursor.lockState;
 
-            moveAction?.action.Disable();
-            lookAction?.action.Disable();
-            jumpAction?.action.Disable();
+            AudioListener.pause = true;
 
-            playerInput?.SwitchCurrentActionMap("UI");
-
-            UnlockCursor();
         }
 
         private void ResumeGame()
         {
             Time.timeScale = 1f;
             isPaused = false;
+            AudioListener.pause = false;
+
             pauseMenuCanvas?.SetActive(false);
 
-            playerInput?.SwitchCurrentActionMap("Player");
-
-            moveAction?.action.Enable();
-            lookAction?.action.Enable();
-            jumpAction?.action.Enable();
-
-            LockCursor();
+            if (shouldLock)
+            {
+                playerInput?.SwitchCurrentActionMap("Player");
+                moveAction?.action.Enable();
+                lookAction?.action.Enable();
+                jumpAction?.action.Enable();
+                LockCursor();
+            }
         }
 
         private void LockCursor()
@@ -110,10 +159,10 @@ namespace My_Assets.Menus
             Application.Quit();
         }
 
-        public void ReturnToMainMenu() 
+        public void ReturnToMainMenu()
         {
             Time.timeScale = 1f;
-            SceneManager.LoadScene("Main menu scene"); 
+            SceneManager.LoadScene("Main menu scene");
         }
     }
 }

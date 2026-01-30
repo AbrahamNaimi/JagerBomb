@@ -10,21 +10,36 @@ namespace My_Assets.Puzzles
         private Color _startColor;
         private Color _endColor;
         private float _elapsed;
-        public bool shouldFade = true;
+        public bool shouldFade = false;
 
         void Start()
         {
             _lineRenderer = GetComponent<LineRenderer>();
 
-            _lineRenderer.positionCount = 2;
-            _lineRenderer.SetPosition(0, Vector3.zero);
-            _lineRenderer.SetPosition(1, Vector3.up * 0.2f);
+            if (_lineRenderer == null)
+            {
+                Debug.LogError("CutFlashEffect: Missing LineRenderer");
+                return;
+            }
 
-            _startColor = _lineRenderer.startColor;
-            _endColor = _lineRenderer.endColor;
+            Debug.Log("CutFlashEffect started 9988");
+
+            _lineRenderer.useWorldSpace = true;
+            _lineRenderer.positionCount = 2;
+
+            _lineRenderer.startWidth = 0.2f;
+            _lineRenderer.endWidth = 0.2f;
+
+            _lineRenderer.material.color = Color.magenta;
+
+            _lineRenderer.SetPosition(0, transform.position);
+            _lineRenderer.SetPosition(1, transform.position + transform.up * 1.5f);
+
+            _startColor = Color.magenta;
+            _endColor = Color.magenta;
+
             _elapsed = 0f;
         }
-
 
         void Update()
         {
