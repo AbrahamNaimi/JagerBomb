@@ -2,8 +2,7 @@ using System.Collections;
 using Puzzles.Puzzle_Generation;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using My_Assets.Puzzles.Logbook;
-using My_Assets.Menus;
+
 namespace My_Assets.Managers
 {
     public class GameSceneManager : MonoBehaviour
@@ -14,24 +13,12 @@ namespace My_Assets.Managers
         [SerializeField] private string puzzleSceneName = "Puzzle 01";
         [SerializeField] private string endSceneName = "EndScene";
         [SerializeField] private int maxLevels = 3;
-        [SerializeField] private PauseMenuManager pauseMenuManager;
 
         // TODO: Check if necessary
-[       SerializeField] private PauseMenuManager pauseMenuManagerPrefab;
-
-        private void Start()
+        void Start()
         {
             _currentLevel = PlayerPrefs.GetInt("Level", 1);
-
-            if (pauseMenuManager == null && pauseMenuManagerPrefab != null)
-            {
-                PauseMenuManager instance = Instantiate(pauseMenuManagerPrefab);
-                pauseMenuManager = instance;
-                DontDestroyOnLoad(instance.gameObject);
-            }
         }
-
-
 
         private void Awake()
         {
@@ -52,16 +39,6 @@ namespace My_Assets.Managers
             StartCoroutine(LoadScene(barSceneName, CursorLockMode.Locked));
         }
 
-     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
-        {
-         if (pauseMenuManager != null)
-           {
-            pauseMenuManager.playerInput = UnityEngine.Object.FindFirstObjectByType<UnityEngine.InputSystem.PlayerInput>();            
-            pauseMenuManager.SetupPauseMenuForScene();
-            }
-        }
-
-
         public void GoToNextLevel()
         {
             if (SceneManager.GetActiveScene().name == barSceneName)
@@ -69,31 +46,30 @@ namespace My_Assets.Managers
                 StartCoroutine(LoadScene(puzzleSceneName, CursorLockMode.None));
                 return;
             }
-
             _currentLevel++;
             PlayerPrefs.SetInt("Level", _currentLevel);
             PlayerPrefs.SetInt("Drunkness", (int)Drunkness.Light);
             PlayerPrefs.Save();
-        
+
             if (_currentLevel > maxLevels)
             {
                 StartCoroutine(LoadScene(endSceneName, CursorLockMode.None));
                 return;
             }
 
-            
+
             StartCoroutine(LoadScene(barSceneName, CursorLockMode.Locked));
         }
-        
+
         private IEnumerator LoadScene(string sceneName, CursorLockMode cursorLockMode)
         {
             Cursor.lockState = cursorLockMode;
-            
+
             Scene currentScene = SceneManager.GetActiveScene();
             AsyncOperation loadSceneOperation = SceneManager.LoadSceneAsync(sceneName, mode: LoadSceneMode.Single);
 
             while (loadSceneOperation != null && !loadSceneOperation.isDone) yield return null;
-            
+
             SceneManager.SetActiveScene(SceneManager.GetSceneByName(sceneName));
             SceneManager.UnloadSceneAsync(currentScene.buildIndex);
         }
