@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using JetBrains.Annotations;
 using My_Assets.Puzzles.Controllers;
 using My_Assets.Puzzles.Puzzle_Generation;
-using Puzzles;
+using Puzzles.Puzzle_Generation;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -21,13 +21,14 @@ namespace My_Assets.Puzzles
         public bool IsBombSolved { get; private set; } = false;
         public float cameraDistanceToPuzzle = 0.75f;
         public TimerController timerController;
+        public EndscreenController endscreenController;
         public GameObject puzzleEndScreen;
-        public float[] timePerLevelSeconds = { 120f, 180f,240f };
+        public float[] timePerLevelSeconds = { 120f, 180f, 240f };
 
         private Vector3 _screenPoint;
         private Vector3 _offset;
         private InputActions _inputActions;
-        private List<IPuzzle> _puzzleControllers = new ();
+        private List<IPuzzle> _puzzleControllers = new();
 
         private Vector3 _cameraStartPosition;
         [CanBeNull] private IPuzzle _currentPuzzle;
@@ -37,16 +38,16 @@ namespace My_Assets.Puzzles
         void Start()
         {
             _inputActions.UI.Click.performed += ctx => MouseRaycast(ctx);
-        
+
             PuzzleGenerator = new PuzzleGenerator();
             PuzzleGenerator.SetPuzzles(puzzleSlots);
             GetPuzzles();
             GetPuzzleScripts();
             SetIsSolved(false);
-        
+
             _cameraStartPosition = mainCamera.transform.position;
             timerCamera.enabled = false;
-            
+
             timerController.StartTimer(timePerLevelSeconds[PlayerPrefs.GetInt("Level") - 1]);
         }
 
@@ -115,7 +116,32 @@ namespace My_Assets.Puzzles
             if (isSolved)
             {
                 timerController.PauseTimer();
+                float currentLevelCompletionTime = timerController.getCurrentTimerTime();
+
+                string currentLevelCompletionTimeFormatted = timerController.getCurrentTimerTimeFormatted();
+                float totalTimerTimePreviousLevel = PlayerPrefs.GetFloat("TotalTimerTime");
+                float totalTimerTime = currentLevelCompletionTime + totalTimerTimePreviousLevel;
+                string totalTimerTimeFormatted = timerController.formatTime(currentLevelCompletionTime + totalTimerTimePreviousLevel);
+
+                string text;
+                PlayerPrefs.SetFloat("CurrentLevelCompletionTime", currentLevelCompletionTime);
+
+                PlayerPrefs.SetFloat("TotalTimerTime", totalTimerTime);
                 isSolvedLight.GetComponent<Renderer>().material.color = Color.green;
+                string baseText = $"You succesfully defused the bomb! \n Bomb dismantle time: {currentLevelCompletionTimeFormatted}";
+                if (PlayerPrefs.GetInt("Level") == 3)
+                {
+                    int drunknessMax = (int)Drunkness.Heavy * 3;
+                    int drunknessScore = PlayerPrefs.GetInt("DrunknessScore", 0);
+                    int score = (int)((drunknessMax - drunknessScore) * PlayerPrefs.GetFloat("TotalTimerTime", 0));
+                    text = $"{baseText} \n Total time spent dismantling bombs: {totalTimerTimeFormatted} \n Your rehab score is: {score}";
+                }
+                else
+                {
+                    text = baseText;
+                }
+
+                endscreenController.setDisplayText(text);
                 puzzleEndScreen.SetActive(true);
             }
             else

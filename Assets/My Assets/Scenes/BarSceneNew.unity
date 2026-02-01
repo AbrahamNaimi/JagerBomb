@@ -16267,6 +16267,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 43a6a5c3d20a846b3920aa80f781fdea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  barSceneName: BarSceneNew
+  puzzleSceneName: Puzzle 01
+  endSceneName: EndScene
   maxLevels: 3
 --- !u!4 &776716664
 Transform:

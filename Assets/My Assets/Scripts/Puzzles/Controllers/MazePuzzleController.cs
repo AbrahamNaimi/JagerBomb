@@ -231,8 +231,9 @@ namespace My_Assets.Puzzles.Controllers
 
         private void GenerateLogbookPage()
         {
-            string instructions = "Vind de weg naar het doel (groen).\n\n" +
-                                  "Oplossing:\n" +
+            string instructions = "Ohh how challenging! A maze!\n\n" +
+                                  "Use the buttons but do not mess up! That would end in an early end of your shift! Haha!\n" +
+                                  "Guide yourself to the end of the made using the instructions below!\n" +
                                   GetFormattedSolution();
 
             logbookController.AddPage(
