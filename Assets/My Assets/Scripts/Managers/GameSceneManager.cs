@@ -35,6 +35,9 @@ namespace My_Assets.Managers
         {
             PlayerPrefs.SetInt("Level", 1);
             PlayerPrefs.SetInt("Drunkness", (int)Drunkness.Light);
+            PlayerPrefs.SetInt("DrunknessScore", 0);
+
+            PlayerPrefs.SetFloat("TotalTimerTime", 0);
             PlayerPrefs.Save();
             StartCoroutine(LoadScene(barSceneName, CursorLockMode.Locked));
         }
@@ -47,6 +50,12 @@ namespace My_Assets.Managers
                 return;
             }
             _currentLevel++;
+
+            int currentDrunkScore = PlayerPrefs.GetInt("Drunkness", 0);
+            int totalDrunknessScore = PlayerPrefs.GetInt("DrunknessScore", 0);
+            int newDrunknessScore = currentDrunkScore + totalDrunknessScore;
+            PlayerPrefs.SetInt("DrunknessScore", newDrunknessScore);
+
             PlayerPrefs.SetInt("Level", _currentLevel);
             PlayerPrefs.SetInt("Drunkness", (int)Drunkness.Light);
             PlayerPrefs.Save();

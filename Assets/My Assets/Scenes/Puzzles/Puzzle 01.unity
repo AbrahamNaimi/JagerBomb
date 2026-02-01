@@ -461,6 +461,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   logbookController: {fileID: 963536896}
+  timerController: {fileID: 1469785991}
   wires:
   - {fileID: 1797270751}
   - {fileID: 1526813119}
@@ -1236,7 +1237,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: You succesfully defused the bomb!
+  m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -2801,6 +2802,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 43a6a5c3d20a846b3920aa80f781fdea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  barSceneName: BarSceneNew
+  puzzleSceneName: Puzzle 01
+  endSceneName: EndScene
   maxLevels: 3
 --- !u!4 &556766922
 Transform:
@@ -5300,6 +5304,7 @@ MonoBehaviour:
   bombManager: {fileID: 2081099851}
   succesScreen: {fileID: 518588703}
   failScreen: {fileID: 1383076811}
+  displayText: {fileID: 245902336}
 --- !u!225 &1005214505
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -11427,6 +11432,7 @@ MonoBehaviour:
   inventoryManager: {fileID: 1029880770}
   cameraDistanceToPuzzle: 0.75
   timerController: {fileID: 1469785991}
+  endscreenController: {fileID: 1005214504}
   puzzleEndScreen: {fileID: 1005214500}
   timePerLevelSeconds:
   - 120
