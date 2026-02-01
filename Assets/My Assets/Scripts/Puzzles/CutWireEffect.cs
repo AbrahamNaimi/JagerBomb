@@ -22,8 +22,6 @@ namespace My_Assets.Puzzles
                 return;
             }
 
-            Debug.Log("CutFlashEffect started 9988");
-
             _lineRenderer.useWorldSpace = true;
             _lineRenderer.positionCount = 2;
 
