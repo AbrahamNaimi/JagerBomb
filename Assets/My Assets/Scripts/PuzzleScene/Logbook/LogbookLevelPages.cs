@@ -1,10 +1,11 @@
-using My_Assets.Puzzles.Logbook;
-
-public static class LogbookLevelPages
+namespace My_Assets.PuzzleScene.Logbook
 {
-    public static LogBookPage GetPageForLevel(int level, int drunkness)
+    public static class LogbookLevelPages
     {
-        var lore = LevelLore.GetLore(level, drunkness);
-        return new LogBookPage(lore.title, lore.title, lore.content);
+        public static LogBookPage GetPageForLevel(int level, int drunkness)
+        {
+            var lore = LevelLore.GetLore(level, drunkness);
+            return new LogBookPage(lore.title, lore.title, lore.content);
+        }
     }
 }

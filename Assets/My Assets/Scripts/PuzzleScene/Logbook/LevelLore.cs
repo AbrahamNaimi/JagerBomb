@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace My_Assets.Puzzles.Logbook
+namespace My_Assets.PuzzleScene.Logbook
 {
     public static class LevelLore
     {

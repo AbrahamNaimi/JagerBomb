@@ -3,7 +3,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace My_Assets.Puzzles.Logbook
+namespace My_Assets.PuzzleScene.Logbook
 {
     public class LogbookPageCreator
     {

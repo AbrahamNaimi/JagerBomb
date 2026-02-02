@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
-using My_Assets.Puzzles.Logbook;
+using My_Assets.PuzzleScene.Logbook;
 using UnityEngine;
 using Random = System.Random;
 

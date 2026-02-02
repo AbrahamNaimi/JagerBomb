@@ -2,7 +2,7 @@
 using JetBrains.Annotations;
 using UnityEngine;
 
-namespace My_Assets.Puzzles.Logbook
+namespace My_Assets.PuzzleScene.Logbook
 {
     public class LogBookPage
     {

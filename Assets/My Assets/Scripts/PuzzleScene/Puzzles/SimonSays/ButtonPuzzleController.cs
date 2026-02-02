@@ -1,8 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using My_Assets.Puzzles.Logbook;
 using My_Assets.PuzzleScene.Bomb;
+using My_Assets.PuzzleScene.Logbook;
 using UnityEngine;
 
 namespace My_Assets.PuzzleScene.Puzzles.SimonSays
