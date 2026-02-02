@@ -121,30 +121,23 @@ namespace My_Assets.PuzzleScene
             if (isSolved)
             {
                 timerController.PauseTimer();
-                float currentLevelCompletionTime = timerController.getCurrentTimerTime();
+                isSolvedLight.GetComponent<Renderer>().material.color = Color.green;
+                
+                float currentLevelCompletionTime = timerController.GetCurrentTimerTime();
+                float totalTimerTime = currentLevelCompletionTime + PlayerPrefs.GetFloat("TotalTimerTime");
 
-                string currentLevelCompletionTimeFormatted = timerController.getCurrentTimerTimeFormatted();
-                float totalTimerTimePreviousLevel = PlayerPrefs.GetFloat("TotalTimerTime");
-                float totalTimerTime = currentLevelCompletionTime + totalTimerTimePreviousLevel;
-                string totalTimerTimeFormatted = timerController.formatTime(currentLevelCompletionTime + totalTimerTimePreviousLevel);
-
-                string text;
+                string text = $"You succesfully defused the bomb! \n Bomb dismantle time: {timerController.GetTimerTimeLeftFormatted()}";
                 PlayerPrefs.SetFloat("CurrentLevelCompletionTime", currentLevelCompletionTime);
 
                 PlayerPrefs.SetFloat("TotalTimerTime", totalTimerTime);
-                isSolvedLight.GetComponent<Renderer>().material.color = Color.green;
-                string baseText = $"You succesfully defused the bomb! \n Bomb dismantle time: {currentLevelCompletionTimeFormatted}";
-                if (PlayerPrefs.GetInt("Level") == 3)
+                int maxLevel = GameSceneManager.Instance.maxLevels;
+                if (PlayerPrefs.GetInt("Level") == maxLevel)
                 {
-                    int drunknessMax = (int)Drunkness.Heavy * 3;
+                    int drunknessMax = (int)Drunkness.Heavy * maxLevel;
                     int drunknessScore = PlayerPrefs.GetInt("DrunknessScore", 0);
                     float totalTimeAvailable = timePerLevelSeconds.Sum();
                     int score = (int)((drunknessMax - drunknessScore) * (totalTimeAvailable - PlayerPrefs.GetFloat("TotalTimerTime", 0)));
-                    text = $"{baseText} \n Total time spent dismantling bombs: {totalTimerTimeFormatted} \n Your rehab score is: {score}";
-                }
-                else
-                {
-                    text = baseText;
+                    text = $"{text} \n Total time spent dismantling bombs: {timerController.StringFormatTimerTime(totalTimerTime)} \n Your rehab score is: {score}";
                 }
 
                 endscreenController.SetDisplayText(text);

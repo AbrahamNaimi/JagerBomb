@@ -37,6 +37,9 @@ namespace My_Assets.BarScene.Controllers
         public CanvasGroup fadeCanvas;
         public float fadeDuration = 0.5f;
 
+        [Header("QuickTimeEvents")] 
+        [SerializeField] private int drinkingImpulsesPerLevel = 2;
+
         // State
         bool playerInZone, isSitting;
         Vector3 savedPlayerPos;
@@ -59,7 +62,7 @@ namespace My_Assets.BarScene.Controllers
         void Start()
         {
             _currentDrunkness = (Drunkness) PlayerPrefs.GetInt("Drunkness");
-            _numberOfDrinkingImpulses = PlayerPrefs.GetInt("Level") * 3;
+            _numberOfDrinkingImpulses = PlayerPrefs.GetInt("Level") * drinkingImpulsesPerLevel;
 
             _QTE = Instantiate(qteObject, Vector3.zero, Quaternion.identity);
             _QTEController = _QTE.GetComponent<QuicktimeEventController>();

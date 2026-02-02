@@ -19,7 +19,7 @@ namespace My_Assets.PuzzleScene.Bomb
             _currentTimerTime -= Time.deltaTime;
             if (_currentTimerTime < 0) _currentTimerTime = 0;
 
-            timerText.text = formatTime(_currentTimerTime);
+            timerText.text = StringFormatTimerTime(_currentTimerTime);
 
             if (_currentTimerTime == 0)
             {
@@ -44,17 +44,17 @@ namespace My_Assets.PuzzleScene.Bomb
             isStopped = true;
         }
 
-        public string getCurrentTimerTimeFormatted()
+        public string GetTimerTimeLeftFormatted()
         {
-            return formatTime(initialTime - _currentTimerTime);
+            return StringFormatTimerTime(initialTime - _currentTimerTime);
         }
 
-        public float getCurrentTimerTime()
+        public float GetCurrentTimerTime()
         {
             return initialTime - _currentTimerTime;
         }
 
-        public string formatTime(float time)
+        public string StringFormatTimerTime(float time)
         {
             int minutes = Mathf.FloorToInt(time / 60);
             int seconds = Mathf.FloorToInt(time % 60);

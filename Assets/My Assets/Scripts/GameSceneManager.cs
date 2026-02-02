@@ -12,7 +12,7 @@ namespace My_Assets
         private const string BarSceneName = "BarScene";
         private const string PuzzleSceneName = "PuzzleScene";
         private const string EndSceneName = "MainMenuScene";
-        [SerializeField] private int maxLevels = 3;
+        [SerializeField] public int maxLevels = 3;
 
         // TODO: Check if necessary
         void Start()
