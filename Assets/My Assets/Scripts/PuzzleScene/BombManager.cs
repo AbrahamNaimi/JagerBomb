@@ -123,14 +123,12 @@ namespace My_Assets.PuzzleScene
                 timerController.PauseTimer();
                 isSolvedLight.GetComponent<Renderer>().material.color = Color.green;
                 
-                float currentLevelCompletionTime = timerController.GetCurrentTimerTime();
-                float totalTimerTime = currentLevelCompletionTime + PlayerPrefs.GetFloat("TotalTimerTime");
+                float totalTimerTime = timerController.GetCurrentTimerTime() + PlayerPrefs.GetFloat("TotalTimerTime");
+                PlayerPrefs.SetFloat("TotalTimerTime", totalTimerTime);
 
                 string text = $"You succesfully defused the bomb! \n Bomb dismantle time: {timerController.GetTimerTimeLeftFormatted()}";
-                PlayerPrefs.SetFloat("CurrentLevelCompletionTime", currentLevelCompletionTime);
-
-                PlayerPrefs.SetFloat("TotalTimerTime", totalTimerTime);
                 int maxLevel = GameSceneManager.Instance.maxLevels;
+                
                 if (PlayerPrefs.GetInt("Level") == maxLevel)
                 {
                     int drunknessMax = (int)Drunkness.Heavy * maxLevel;
