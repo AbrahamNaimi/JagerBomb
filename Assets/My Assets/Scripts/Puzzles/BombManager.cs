@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using JetBrains.Annotations;
 using My_Assets.Puzzles.Controllers;
 using My_Assets.Puzzles.Puzzle_Generation;
@@ -133,7 +134,8 @@ namespace My_Assets.Puzzles
                 {
                     int drunknessMax = (int)Drunkness.Heavy * 3;
                     int drunknessScore = PlayerPrefs.GetInt("DrunknessScore", 0);
-                    int score = (int)((drunknessMax - drunknessScore) * PlayerPrefs.GetFloat("TotalTimerTime", 0));
+                    float totalTimeAvailable = timePerLevelSeconds.Sum();
+                    int score = (int)((drunknessMax - drunknessScore) * (totalTimeAvailable - PlayerPrefs.GetFloat("TotalTimerTime", 0)));
                     text = $"{baseText} \n Total time spent dismantling bombs: {totalTimerTimeFormatted} \n Your rehab score is: {score}";
                 }
                 else
