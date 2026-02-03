@@ -123,7 +123,7 @@ namespace My_Assets.PuzzleScene
                 timerController.PauseTimer();
                 isSolvedLight.GetComponent<Renderer>().material.color = Color.green;
                 
-                float totalTimerTime = timerController.GetCurrentTimerTime() + PlayerPrefs.GetFloat("TotalTimerTime");
+                float totalTimerTime = timerController.GetTimeLeft() + PlayerPrefs.GetFloat("TotalTimerTime");
                 PlayerPrefs.SetFloat("TotalTimerTime", totalTimerTime);
 
                 string text = $"You succesfully defused the bomb! \n Bomb dismantle time: {timerController.GetTimerTimeLeftFormatted()}";

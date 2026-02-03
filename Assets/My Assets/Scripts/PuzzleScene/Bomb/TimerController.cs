@@ -49,7 +49,7 @@ namespace My_Assets.PuzzleScene.Bomb
             return StringFormatTimerTime(initialTime - _currentTimerTime);
         }
 
-        public float GetCurrentTimerTime()
+        public float GetTimeLeft()
         {
             return initialTime - _currentTimerTime;
         }
